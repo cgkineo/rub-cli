@@ -262,6 +262,11 @@ class Commands {
     return Commands;
   }
 
+  static prepend(name) {
+    Commands._commands.unshift(name);
+    return Commands;
+  }
+
   static set(type, name) {
     switch (type) {
       case "switch":
