@@ -83,7 +83,9 @@ class Globals {
           global.os = require("os");
           global.open = require("open");
           global.zipLibrary = require("node-native-zip-compression");
+          global.imagesize = require("image-size-big-max-buffer");
           global.semver = require("semver");
+          global.ffprobe = require("./ffprobe");
           global.grunt = require("./grunt");
           global.tasks = require("./tasks");
           global.terminal = require("./terminal");
