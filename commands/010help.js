@@ -5,7 +5,6 @@ commands.create({
   index: 10,
   command: "help",
   switch: "h",
-  option: "help",
   description: "display this help text",
   exclusive: true,
 

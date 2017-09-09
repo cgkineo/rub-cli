@@ -5,7 +5,6 @@ commands.create({
   index: 30,
   command: "build",
   switch: "b",
-  options: "build",
   description: "production build (no sourcemaps, with uglify)",
   exclusive: false,
 
@@ -21,7 +20,6 @@ commands.create({
   index: 40,
   command: "dev",
   switch: "d",
-  options: "dev",
   description: "development build (with sourcemaps, no uglify)",
   exclusive: false,
 

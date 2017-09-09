@@ -3,8 +3,8 @@
 commands.create({
 
   index: 12,
+  command: "force",
   switch: "f",
-  option: "force",
   description: "force rebuild",
   exclusive: false,
 
@@ -18,8 +18,8 @@ commands.create({
 commands.create({
 
   index: 13,
+  command: "forceall",
   switch: "F",
-  option: "forceall",
   description: "force clean then rebuild",
   exclusive: false,
 
@@ -36,7 +36,6 @@ commands.create({
   index: 11,
   command: "verbose",
   switch: "v",
-  option: "verbose",
   description: "verbose output",
   exclusive: false,
 

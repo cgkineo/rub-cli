@@ -8,7 +8,6 @@ commands.create({
     "tracking-insert",
     "trackinginsert"
   ],
-  option: "trackinginsert",
   description: "add block tracking ids",
   exclusive: false,
 
@@ -59,7 +58,6 @@ commands.create({
     "tracking-remove",
     "trackingremove"
   ],
-  option: "trackingremove",
   description: "remove block tracking ids",
   exclusive: true,
 
@@ -109,7 +107,6 @@ commands.create({
     "tracking-reset",
     "trackingreset"
   ],
-  option: "trackingreset",
   description: "reset block tracking ids",
   exclusive: true,
 

@@ -5,7 +5,6 @@ commands.create({
   index: 15,
   command: "clean",
   switch: "c",
-  option: "clean",
   description: "clean output folder",
   exclusive: false,
 

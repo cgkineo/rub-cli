@@ -11,73 +11,49 @@ class Terminal {
     //drop index.js
     if (/node/g.test(args[0])) args = argv.slice(2);
 
-    return {
-      options: Terminal.parseOptions(args),
-      items: args,
-      switches: {}
+    var rtn = {
+      switches: Terminal.parseOptions(args),
+      items: args
     };
+
+    return rtn;
 
   }
 
   static parseOptions(args) {
 
-    let options = {};;
+    let options = {};
     let i = 0;
 
     while (args.length > 0 && i < args.length) {
 
       let arg = args[i];
+      switch (arg[0]) {
+        case "-":
+          args.splice(i,1);
+          var sliceAt;
+          for (var c = 0, cl = args[0].length; c < cl; c++) {
+            if (arg[c] !== "-") {
+              sliceAt = c;
+              break;
+            }
+          }
+          var whole = arg.slice(sliceAt);
+          var parts = whole.split("=");
 
-      let slashCharIndex = arg.indexOf("-");
-      if (slashCharIndex !== 0) {
-        i++;
-        continue;
+          if (parts.length === 1) options[parts[0]] = true;
+          else {
+            options[parts[0]] = whole.substr(parts[0].length+1);
+          }
+
+          break;
+        default:
+          i++;
       }
-
-      let truncateBy = arg.lastIndexOf("-")+1;
-
-      let optionName = arg.substr(truncateBy);
-      let values = args.slice(i+truncateBy);
-
-      let equalsCharIndex = optionName.indexOf("=");
-      let hasEquals = (equalsCharIndex !== -1);
-      if (hasEquals) {
-        //-x=y can be removed from the commands stack altogether
-        let value = optionName.substr(equalsCharIndex+1);
-        values.unshift(value);
-        optionName = optionName.substr(0, equalsCharIndex);
-      }
-
-      //keep all standalone items in commands section as there is no way of telling
-      //-b testing   - is that a -b= or -b and testing?
-
-      args.splice(i,1);
-
-      values = Terminal.constrainOptionValues(values);
-
-      options[optionName] = values;
 
     }
 
     return options;
-
-  }
-
-  static constrainOptionValues(values) {
-
-    //if option values contain other options they should be dropped
-    for (let i = 0, l = values.length; i < l; i++) {
-
-      let slashCharIndex = values[i].indexOf("-");
-      if (slashCharIndex !== 0) continue;
-
-      values = values.slice(0, i);
-
-      break;
-
-    }
-
-    return values;
 
   }
 

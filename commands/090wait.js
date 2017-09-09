@@ -4,7 +4,6 @@ commands.create({
 
   index: 90,
   command: "wait",
-  option: "wait",
   switch: "W",
   description: "wait for keypress",
   exclusive: false,

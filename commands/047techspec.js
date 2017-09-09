@@ -5,7 +5,6 @@ commands.create({
   index: 47,
   command: "techspec",
   switch: "t",
-  option: "t",
   description: "check assets against techspec",
   exclusive: false,
 

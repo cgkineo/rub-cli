@@ -5,7 +5,6 @@ commands.create({
   index: 46,
   command: "redundantassets",
   switch: "r",
-  option: "r",
   description: "check for redundant assets",
   exclusive: false,
 

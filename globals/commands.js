@@ -29,7 +29,7 @@ class Commands {
     Commands._items = terminalData.items;
     Commands._commands = [];
     Commands._options = {};
-    Commands._switches = terminalData.options;
+    Commands._switches = terminalData.switches;
 
     // turn known items into commands
     let newItems = [];
@@ -51,14 +51,16 @@ class Commands {
 
     // turn known switches into options
     for (let k in Commands._switches) {
+      var found = false;
       Commands._cmdObjects.forEach((handler)=>{
         if (handler.defaults) handler.defaults();
         if (!handler.option) return;
         if (!(handler.option instanceof Array)) handler.option = [handler.option];
         if (handler.option.indexOf(k) === -1) return;
         Commands._options[k] = Commands._switches[k];
-        delete Commands._switches[k];
+        found = true;
       });
+      if (found) delete Commands._switches[k];
     }
 
     Commands._preExecuteCallbacks.forEach((callback)=>{
@@ -186,12 +188,12 @@ class Commands {
       for (let i = 0, l = hasSwitches.length; i < l; i++) {
         let swch = hasSwitches[i];
         if (_.contains(k, swch)) {
-          return true;
+          return Commands._switches[k];
         }
       }
     }
 
-    return false;
+    return;
 
   }
 
@@ -203,10 +205,12 @@ class Commands {
       for (let i = 0, l = hasOptions.length; i < l; i++) {
         let opt = hasOptions[i];
         if (opt === k) {
-          return true;
+          return Commands._options[k];
         }
       }
     }
+
+    return;
 
   }
 

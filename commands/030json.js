@@ -5,7 +5,6 @@ commands.create({
   index: 30,
   command: "json",
   switch: "j",
-  options: "json",
   description: "process json",
   exclusive: false,
 
@@ -65,13 +64,26 @@ commands.create({
     }
 
     var gruntTasks = [
-      'check-json',
-      'copy',
+      'check-json'
+    ];
+
+    if (semver.satisfies(adapt.version, '>2.2.1')) {
+      // schema defaults acts upon the source
+      gruntTasks.push("schema-defaults");
+    }
+
+    gruntTasks.push('copy');
+
+    if (semver.satisfies(adapt.version, '<=2.2.1')) {
+      // schema defaults acts upon the destination
+      gruntTasks.push("schema-defaults");
+    }
+
+    gruntTasks.push.apply(gruntTasks, [
       'create-json-config',
-      'schema-defaults',
       'tracking-insert',
       'replace'
-    ];
+    ])
 
     if (adapt.hasMinify && !options.isDevelopment && isBuilding) {
       if (isVerbose) {

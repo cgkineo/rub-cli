@@ -5,7 +5,6 @@ commands.create({
   index: 45,
   command: "zip",
   switch: "z",
-  option: "zip",
   description: "zip output folders",
   exclusive: false,
 
