@@ -82,6 +82,7 @@ class Globals {
           global.url = require("url");
           global.os = require("os");
           global.open = require("open");
+          global.zipLibrary = require("node-native-zip-compression");
           global.semver = require("semver");
           global.grunt = require("./grunt");
           global.tasks = require("./tasks");
