@@ -1,7 +1,7 @@
 {
   "name": "rub-cli",
   "commonName": "rub-develop",
-  "version": "0.1.21",
+  "version": "0.0.1",
   "custom": false,
   "description": "Adapt Buildkit (rub-develop)",
   "failText": "Please run 'npm install -g rub-cli'",
