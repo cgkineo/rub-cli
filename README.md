@@ -9,11 +9,11 @@ Supports only Adapt versions >=2.0.13.
 ### Installation
 Please make sure you leave the following files and folders in your development folder:  
 
-``node_module``  
+``node_modules`` (if it's there)  
 ``grunt``  
 ``config.js``  
 
-Run ``npm install -g rub-cli``  
+Then run ``npm install -g rub-cli``  
 
 
 ### Execute
