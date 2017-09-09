@@ -15,11 +15,13 @@ class Tasks {
 
     if (layout) {
       let outputPaths = Tasks.filterOutputDirs(layout);
+      if (!outputPaths) return Tasks.next();
       return Tasks.next(outputPaths);
     }
 
-    return layouts.load(rootPath).then((layout)=>{
+    return layouts.load(pwd).then((layout)=>{
       let outputPaths = Tasks.filterOutputDirs(layout);
+      if (!outputPaths) return Tasks.next();
       return Tasks.next(outputPaths);
     });
 
@@ -32,6 +34,9 @@ class Tasks {
   static filterOutputDirs(layout) {
 
     let items = commands.get("items");
+    if (items.length === 0) {
+      return layout;
+    }
 
     let selectedLayouts = {};
     let count = 0;
@@ -48,7 +53,7 @@ class Tasks {
     }
 
     if (count === 0) {
-      return layout;
+      return null;
     }
 
     return selectedLayouts;

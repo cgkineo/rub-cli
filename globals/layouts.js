@@ -2,34 +2,36 @@
 
 class Layouts {
 
-  static load(rootPath) {
+  static load() {
 
     return new Promise((resolve)=>{
 
       resolve({
-        'builds': fs.existsSync(path.join(rootPath, "..", "builds")),
-        'src/course': fs.existsSync(path.join(rootPath, "..", "src/course"))
+        'builds': fs.existsSync(path.join(pwd, "builds")),
+        'src/course': fs.existsSync(path.join(pwd, "src/course"))
       });
 
     }).then((layout)=>{
 
       if (layout['src/course']) {
         layout['src/course'] = { 
-          dest: fsg.stat(path.join(rootPath, "../build")),
-          src: fsg.stat(path.join(rootPath, "../src")),
+          dest: fsg.stat(path.join(pwd, "build")),
+          src: fsg.stat(path.join(pwd, "src")),
           isServerBuild: false
         };
       } else {
         delete layout['src/course'];
       }
 
-      if (!layout.builds) return;
-
-      // collect all builds immediate subfolders, attach to layout.builds[]
-
+      var hasBuilds = !!(layout.builds);
       delete layout.builds;
-      
-      var buildsPath =  path.join(rootPath,"../builds");
+
+      if (!hasBuilds) {
+        return new Promise((resolve)=>{resolve(layout);});
+      }
+
+      // collect all builds immediate subfolders, attach to layout.builds[]      
+      var buildsPath =  path.join(pwd, "builds");
       return fsg("**/course/config.*", buildsPath).stats().then((stats)=>{
 
         return stats.each((stat, next, resolve, reject)=>{
@@ -46,7 +48,7 @@ class Layouts {
           if (moduleDirStat.isDir) {
             layout[moduleName] = {
               dest: moduleDirStat,
-              src: fsg.stat(path.join(rootPath, "../src")),
+              src: fsg.stat(path.join(pwd, "src")),
               isServerBuild: true
             };
           }

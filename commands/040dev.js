@@ -110,7 +110,7 @@ commands.create({
       log(`${namePrefix}Compiling code ${options.isDevelopment?"(dev)":"(build)"}...`);
     }
 
-    var hasNewerPrefix = fs.existsSync(path.join(rootPath, "../node_modules/grunt-newer"));
+    var hasNewerPrefix = adapt.hasNewer;
     if (options.force) {
       hasNewerPrefix = false;
     }
@@ -135,14 +135,12 @@ commands.create({
       `${newerPrefix}less${typePostfix}`
     ];
 
-    var hasScriptsFunctionality = fs.existsSync(path.join(rootPath, "../grunt/tasks/scripts.js"));
-    if (hasScriptsFunctionality) {
+    if (adapt.hasScript) {
       log(`${namePrefix}Running plugin scripts...`);
       gruntTasks.push('scripts:adaptpostbuild');
     }
 
-    var hasMinifyFunctionality = fs.existsSync(path.join(rootPath, "../grunt/tasks/minify.js"));
-    if (hasMinifyFunctionality && !options.isDevelopment) {
+    if (adapt.hasMinify && !options.isDevelopment) {
       if (isVerbose) {
         log(`${namePrefix}Minifying...`);
       }

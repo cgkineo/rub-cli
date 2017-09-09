@@ -26,7 +26,6 @@ commands.create({
 
   execute() {
     return new Promise((resolve, reject) => {
-      tasks.isWaiting = true;
       tasks.add(this);
       resolve();
     });
@@ -40,6 +39,8 @@ commands.create({
   _allLayouts: false,
 
   perform(name, options, paths) {
+
+    tasks.isWaiting = true;
 
     if (paths.isServerBuild && !this._watchPaths["course:"+name]) {
 

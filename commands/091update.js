@@ -34,6 +34,7 @@ function download(locationUrl, callback, isText) {
 commands.create({
 
   index: 91,
+  command: "update",
   exclusive: false,
 
   shouldExecute() {
@@ -44,7 +45,9 @@ commands.create({
 
     return new Promise((resolve, reject) => {
 
-      if (application.custom) {
+      if (rub.custom) {
+        notice("Custom version of rub.");
+        notice("No updates available.");
         resolve();
         return;
       }
@@ -53,7 +56,7 @@ commands.create({
       var stat = fsg.stat(pkgPath);
       var age = Date.now() - (stat.mtime);
       
-      if (age < 3600000) { // an hour since last check
+      if (age < 3600000 && !commands.has("update")) { // an hour since last check
       //if (age < 300000) { // 5 minutes since last check
       // if (age < 60000) { // 1 minutes since last check
          resolve();
@@ -65,17 +68,26 @@ commands.create({
       fs.appendFileSync(pkgPath, " ");
       fs.truncateSync(pkgPath, stat.size);
 
-      download(application.versionURL, (data)=>{
+      download(rub.versionURL, (data)=>{
         try {
           data = JSON.parse(data);
         } catch (e) {
           return;
         }
-        if (!semver.lt(application.version, data.version)) return;
-        warn("New rub version released, please upgrade to", data.version);
+        if (!semver.lt(rub.version, data.version)) {
+          notice("No updated needed.");
+          notice("Current:", rub.version)
+          notice("Latest:", data.version);
+          return resolve();
+        }
+        warn("New rub version released.");
+        warn("Current:", rub.version)
+        warn("Latest:", data.version);
+        warn("Please run: npm install -g rub-cli");
+        resolve();
       });
 
-      resolve();
+      
 
     });
 

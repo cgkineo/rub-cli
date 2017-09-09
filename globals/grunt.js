@@ -5,8 +5,8 @@ class Grunt {
   static run(name, tasks, options) {
 
     options = options || {};
-    options['gruntfile'] = path.join(__dirname, "replacementgruntfile.js");
-    options['base'] = path.join(rootPath, "..");
+    options['gruntfile'] = path.join(pwd, patch.getGruntFile());
+    options['base'] = pwd;
 
     var opts = "";
     if (options && Object.keys(options).length) {
@@ -15,7 +15,7 @@ class Grunt {
       }
     }
     var command = "grunt "+tasks.join(" ")+opts;
-
+    
     return new Promise((resolve, reject)=>{
 
       let exec = require('child_process').exec;

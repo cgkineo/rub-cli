@@ -4,30 +4,32 @@ global.commands = require("./commands");
 
 class Globals {
 
-  static initialize(rootPath) {
+  static initialize(pwd, rootPath) {
 
     return new Promise((resolve, reject)=>{
 
       global.globals = Globals;
       global.fs = require("fs");
       global.path = require("path");
-      global.application = JSON.parse(fs.readFileSync(path.join(rootPath, "package.json")));
-      global.adapt = JSON.parse(fs.readFileSync(path.join(rootPath, "..", "package.json")));
       global.rootPath = rootPath;
-
+      global.pwd = pwd;
+      global.rub = require("./rub");
+      global.adapt = require("./adapt");
+      global.patch = require("./patch");
+      
       console.log("");
       let hasRunNpm = false;
 
       function checkAdaptNodeModules() {
 
-        if (fs.existsSync(path.join(rootPath, "..", "node_modules" ))) return checkRubNodeModules();
+        if (fs.existsSync(path.join(pwd, "node_modules" ))) return checkRubNodeModules();
 
         console.log("Running 'npm install' in your development folder...");
         hasRunNpm = true;
 
         let exec = require('child_process').exec;
         let child = exec('npm install', { 
-          cwd: path.join(rootPath, "..")
+          cwd: pwd
         }, function(error) {
           if (error && error.signal) {
             console.error("ERROR: npm install failed.");

@@ -1,9 +1,9 @@
 {
   "name": "rub-cli",
-  "commonName": "rub-develop",
-  "version": "0.0.1",
+  "commonName": "rub-cli",
+  "version": "0.0.2",
   "custom": false,
-  "description": "Adapt Buildkit (rub-develop)",
+  "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run 'npm install -g rub-cli'",
   "scripts": {},
   "author": "Oliver Foster, Kineo",

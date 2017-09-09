@@ -2,7 +2,7 @@
 
 commands.on("preexecute", ()=>{
 
-  log(application.description);
+  log(rub.description);
   log();
 
   logger.pad(2);

@@ -26,7 +26,7 @@ commands.create({
       log("Versions:");
       log();
       log("  Adapt Framework ", "v"+adapt.version);
-      log("  Rub             ", "v"+application.version);
+      log("  Rub             ", "v"+rub.version);
       log("  Node            ", process.version);
       log();
       resolve({stop:commands.has(['version'])||commands.switches(['V'])});

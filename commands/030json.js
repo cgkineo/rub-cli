@@ -73,8 +73,7 @@ commands.create({
       'replace'
     ];
 
-    var hasMinifyFunctionality = fs.existsSync(path.join(rootPath, "../grunt/tasks/minify.js"));
-    if (hasMinifyFunctionality && !options.isDevelopment && isBuilding) {
+    if (adapt.hasMinify && !options.isDevelopment && isBuilding) {
       if (isVerbose) {
         log(`${namePrefix}Minifying...`);
       }

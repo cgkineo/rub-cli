@@ -36,14 +36,13 @@ commands.create({
 
   execute() {
     return new Promise((resolve, reject) => {
-      tasks.isWaiting = true;
       tasks.add(this);
       resolve();
     });
-
   },
   
   perform(name, options, paths) {
+    tasks.isWaiting = true;
     this.finished();
   },
 
@@ -62,7 +61,7 @@ commands.create({
     this._isStarted = true;
     var serveIndex = require('serve-index');
     var serveStatic = require('serve-static');
-    this.path = path.join(rootPath, "..");
+    this.path = pwd;
     this.serveStatic = serveStatic( this.path );
     this.serveIndex = serveIndex( this.path, {'icons': true});
     this.http = require("http");
