@@ -50,5 +50,5 @@ Adapt Buildkit (rub-cli)
     translate:import     import translated text
     -W, wait             wait for keypress
   Finished.
-  
-``
+
+```
