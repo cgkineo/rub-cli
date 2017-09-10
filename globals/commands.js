@@ -98,6 +98,11 @@ class Commands {
 
     }
 
+    process.on('SIGINT', function() {
+      var listeners = process.listeners('SIGINT');
+      process.exit();
+    });
+
     return Commands;
 
   }

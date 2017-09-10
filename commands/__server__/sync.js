@@ -12,13 +12,6 @@ return!0}function Q(a,b,d,e){if(m.acceptData(a)){var f,g,h=m.expando,i=a.nodeTyp
 		if (typeof data === "object" && data.lastEvent > lastEvent) {
 			lastEvent = data.lastEvent;
 			switch (data.type) {
-			case "css":
-				console.log("Server-sync: Reloading link[rel='stylesheet']. "+(new Date()).getTime());
-				var $removed = $("link[rel='stylesheet']").detach();
-				setTimeout(function() {
-					$('head').append($removed);
-				}, 0);
-				break;
 			case "window":
 				location.reload();
 				break;

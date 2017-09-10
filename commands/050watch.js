@@ -172,6 +172,9 @@ commands.create({
 
   finished() {
 
+    var server = commands.get("command", "server");
+    server.reload("window");
+
     if (!this.isForced) {
       commands.unset("switch", "F");
     }

@@ -70,7 +70,10 @@ commands.create({
   },
 
   createListener() {
-    this.http
+    if (this.server) {
+      this.server.close();
+    }
+    this.server = this.http
     .createServer((req,res)=>{ this.request(req,res); })
     .listen(this.port)
     .on('error',(err)=>{ this.errored(err); })
