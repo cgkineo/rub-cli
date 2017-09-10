@@ -8,8 +8,8 @@ class Patch {
       return new Promise((resolve)=>{resolve();});
     }
 
+    notice("Patching...");
     if (!semver.satisfies(adapt.version, ">=2.0.13") || !adapt.hasGruntFolder) {
-      
       warn("rub-cli needs an adapt version >=2.0.13, this is", adapt.version);
       if (!adapt.hasGruntFolder) warn("rub-cli needs the `grunt` folder.");
 
@@ -19,12 +19,27 @@ class Patch {
 
     var promises = [];
 
-    // patch all rub files with this folder
-    promises.push(fsg.copy({
-      globs: "**",
-      location: path.join(rootPath, "patch/2_0_13grunt"),
-      to: pwd
-    }));
+
+    if (semver.satisfies(adapt.version, ">=2.0.13")) {    
+      // patch all rub files with this folder
+      notice(">=2.0.13  reroute grunt");
+      promises.push(fsg.copy({
+        globs: "**",
+        location: path.join(rootPath, "patch/2_0_13grunt"),
+        to: pwd,
+        force: true
+      }));
+    }
+
+    if (semver.satisfies(adapt.version, "<=2.2.1")) {
+      notice("<=2.2.1   fixes 1774,1775,1776,1777,1781,1782,1783,1784");
+      promises.push(fsg.copy({
+        globs: "**",
+        location: path.join(rootPath, "patch/2_2_1grunt"),
+        to: pwd,
+        force: true
+      }));
+    }
 
     // promises.push(this.getRequires().then((requires)=>{
     //   var mapped = {};
