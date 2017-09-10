@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var globals = require("./globals/index");
 globals.initialize(process.cwd(), __dirname).then(()=>{

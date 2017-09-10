@@ -1,4 +1,4 @@
-'use static';
+'use strict';
 
 class Grunt {
 

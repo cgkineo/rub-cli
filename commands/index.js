@@ -1,3 +1,5 @@
+'use strict';
+
 require("./title");
 require("./nocommand");
 require("./000version");

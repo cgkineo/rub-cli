@@ -1,3 +1,5 @@
+'use strict';
+
 var spawn = require('child_process').spawn,
         fs = require('fs'),
         path = require('path'),
