@@ -4,7 +4,7 @@ class Patch {
 
   static initialize() {
 
-    if (adapt.rubpatchversion === rub.version) {
+    if (adapt.rubpatchversion === rub.version && process.argv.indexOf("patch") === -1) {
       return new Promise((resolve)=>{resolve();});
     }
 
