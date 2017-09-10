@@ -9,7 +9,7 @@ commands.create({
   exclusive: false,
 
   initialize() {
-    this.performTasks = _.debounce(_.bind(this.performTasks, this), 1000);
+    this.action = _.debounce(_.bind(this.action, this), 1000);
     this.finished = _.debounce(_.bind(this.finished, this), 100);
   },
 
@@ -52,7 +52,7 @@ commands.create({
           "course/**"
         ],
         location: paths.dest.location,
-        interval: 500
+        interval: 200
       }, (changes)=>{
 
         if (this._allLayouts) return;
@@ -82,7 +82,7 @@ commands.create({
           "course/**"
         ],
         location: paths.src.location,
-        interval: 500
+        interval: 200
       }, (changes)=>{
 
         if (this._allLayouts) return;
@@ -114,7 +114,7 @@ commands.create({
           "!course"
         ],
         location: paths.src.location,
-        interval: 500
+        interval: 200
       }, (changes)=>{
 
         if (this._allLayouts) return;
@@ -144,6 +144,17 @@ commands.create({
   },
 
   performTasks() {
+
+    if (!this._isWaiting) {
+      notice("Changed...");
+      this._isWaiting = true;
+    }
+
+    this.action();
+
+  },
+
+  action: function() {
 
     if (this._isPerforming) return;
     this._isPerforming = true;
@@ -178,6 +189,7 @@ commands.create({
     if (!this.isForced) {
       commands.unset("switch", "F");
     }
+    this._isWaiting = false;
     this._isPerforming = false;
     this._changedLayouts = {};
     this._allLayouts = false;

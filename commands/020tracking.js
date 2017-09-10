@@ -91,7 +91,7 @@ commands.create({
 
     return Promise.all([
       grunt.run(namePrefix, [
-        'tracking-insert'
+        'tracking-remove'
       ], gruntOpts).then(grunt.output).catch(grunt.error)
     ]);
 
@@ -140,7 +140,7 @@ commands.create({
 
     return Promise.all([
       grunt.run(namePrefix, [
-        'tracking-insert'
+        'tracking-reset'
       ], gruntOpts).then(grunt.output).catch(grunt.error)
     ]);
 

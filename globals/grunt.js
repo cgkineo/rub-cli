@@ -59,7 +59,8 @@ class Grunt {
     output = output.replace(/\nDone.\n/g, "");
     output = output.replace(/Copied.*\n/g, "");
     output = output.replace(/Created.*\n/g, "");
-    output = output.replace(/>>.*\n/g, "");
+    output = output.replace(/>> SyntaxError/g, "SyntaxError");
+    output = output.replace(/>> .*\n/g, "");
     output = output.replace(/Aborted due to warnings\.\n/g, ""); 
     output = output.replace(/Use --force to continue\.\n/g, "");
     output = output.replace(/No newer files to process\./g, "");
