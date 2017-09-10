@@ -13,11 +13,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has(['json']) || commands.switches(['j']) || commands.options(['json']);
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
 

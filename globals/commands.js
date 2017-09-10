@@ -23,61 +23,80 @@ class Commands {
   static load(startFilePath) {
 
     startFilePath = path.join(rootPath, startFilePath);
-    require(startFilePath);
 
-    let terminalData = terminal.parse();
-    Commands._items = terminalData.items;
-    Commands._commands = [];
-    Commands._options = {};
-    Commands._switches = terminalData.switches;
+    try {
 
-    // turn known items into commands
-    let newItems = [];
-    for (let i = 0, l = Commands._items.length; i < l; i++) {
-      let k = Commands._items[i];
-      let isRemoved = false;
-      Commands._cmdObjects.forEach((handler)=>{
-        if (!handler.command) return;
-        if (!(handler.command instanceof Array)) handler.command = [handler.command];
-        if (handler.command.indexOf(k) === -1) return;
-        Commands._commands.push.apply(Commands._commands, handler.command);
-        isRemoved = true;
-      });
-      if (!isRemoved) {
-        newItems.push(k);
+      require(startFilePath);
+
+      let terminalData = terminal.parse();
+      Commands._items = terminalData.items;
+      Commands._commands = [];
+      Commands._options = {};
+      Commands._switches = terminalData.switches;
+
+      // turn known items into commands
+      let newItems = [];
+      for (let i = 0, l = Commands._items.length; i < l; i++) {
+        let k = Commands._items[i];
+        let isRemoved = false;
+        Commands._cmdObjects.forEach((handler)=>{
+          if (!handler.command) return;
+          if (!(handler.command instanceof Array)) handler.command = [handler.command];
+          if (handler.command.indexOf(k) === -1) return;
+          Commands._commands.push.apply(Commands._commands, handler.command);
+          isRemoved = true;
+        });
+        if (!isRemoved) {
+          newItems.push(k);
+        }
       }
-    }
-    Commands._items = newItems;
+      Commands._items = newItems;
 
-    // turn known switches into options
-    for (let k in Commands._switches) {
-      var found = false;
+      // turn known switches into options
+      for (let k in Commands._switches) {
+        var found = false;
+        Commands._cmdObjects.forEach((handler)=>{
+          if (!handler.option) return;
+          if (!(handler.option instanceof Array)) handler.option = [handler.option];
+          if (handler.option.indexOf(k) === -1) return;
+          Commands._options[k] = Commands._switches[k];
+          found = true;
+        });
+        if (found) delete Commands._switches[k];
+      }
+      
+      // run config functions
+      try {
+        Commands._cmdObjects.forEach((handler)=>{
+          if (handler.config) handler.config();
+        });
+      } catch(err) {
+        warn(err);
+        return;
+      }
+
+      Commands._preExecuteCallbacks.forEach((callback)=>{
+        callback();
+      });
+
+      Commands._cmdObjects.sort((a, b)=>{
+        return a.index - b.index;
+      });
+
       Commands._cmdObjects.forEach((handler)=>{
         if (handler.defaults) handler.defaults();
-        if (!handler.option) return;
-        if (!(handler.option instanceof Array)) handler.option = [handler.option];
-        if (handler.option.indexOf(k) === -1) return;
-        Commands._options[k] = Commands._switches[k];
-        found = true;
       });
-      if (found) delete Commands._switches[k];
+
+
+      Commands._hold = false;
+      _.defer(Commands.next);
+
+    } catch (err) {
+
+      warn(err);
+      return;
+
     }
-
-    Commands._preExecuteCallbacks.forEach((callback)=>{
-      callback();
-    });
-
-    Commands._cmdObjects.sort((a, b)=>{
-      return a.index - b.index;
-    });
-
-    Commands._cmdObjects.forEach((handler)=>{
-      if (handler.defaults) handler.defaults();
-    });
-
-
-    Commands._hold = false;
-    _.defer(Commands.next);
 
     return Commands;
 
@@ -87,8 +106,8 @@ class Commands {
 
     let next = _.find(Commands._cmdObjects, (handler)=>{
       if (handler.done) return false;
-      if (!handler.shouldExecute) return false;
-      if (handler.shouldExecute()) return true;
+      if (!handler.shouldQueue) return false;
+      if (handler.shouldQueue()) return true;
       return false;
     });
 
@@ -100,7 +119,7 @@ class Commands {
     Commands._running = next;
     next.done = true;
     Commands._wasHandled = true;
-    next.execute().then((options)=>{
+    next.queue().then((options)=>{
 
       options = options || {};
 
@@ -253,6 +272,7 @@ class Commands {
     cmd.description = cmd.description || "";
 
     Commands._cmdObjects.push(cmd);
+    if (cmd.initialize) cmd.initialize();
     return Commands;
 
   }

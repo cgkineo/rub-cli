@@ -8,28 +8,40 @@ commands.create({
   description: "wait for keypress",
   exclusive: false,
 
+  initialize() {
+    this.finished = _.debounce(_.bind(this.finished, this), 100);
+  },
+  
   shouldHelp() {
     return commands.has(['help', undefined]) || 
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
-    return commands.has('wait') || 
-    commands.switches(['W']) ||
-    commands.options(['wait']);
+  shouldQueue() {
+    var server = commands.get("command", "server");
+    var watch = commands.get("command", "watch");
+    return (commands.has('wait') || 
+    commands.switches(['W'])) && !(watch.shouldQueue() || server.shouldQueue());
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
-      //log("Wait for keypress at end...")
+      tasks.add(this);
       resolve();
     });
 
   },
 
   perform() {
-    log("NOT FINISHED: wait for keypress");
+    this.finished();
+  },
+
+  finished() {
+    notice('Press any key to exit');
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', process.exit.bind(process, 0));
   }
 
 });

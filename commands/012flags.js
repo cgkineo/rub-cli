@@ -8,7 +8,7 @@ commands.create({
   description: "force rebuild",
   exclusive: false,
 
-  defaults() {
+  config() {
     if (!commands.has('force') || commands.has("dev") || commands.has("build") || commands.has("json")) return;
     commands.prepend("build");
   },
@@ -28,7 +28,7 @@ commands.create({
   description: "force clean then rebuild",
   exclusive: false,
 
-  defaults() {
+  config() {
     if (!commands.has('forceall') || commands.has("dev")|| commands.has("build") || commands.has("json")) return;
     commands.prepend("build");
   },

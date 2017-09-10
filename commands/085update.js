@@ -33,15 +33,15 @@ function download(locationUrl, callback, isText) {
 
 commands.create({
 
-  index: 91,
+  index: 85,
   command: "update",
   exclusive: false,
 
-  shouldExecute() {
+  shouldQueue() {
     return true;
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
 

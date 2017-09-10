@@ -8,9 +8,12 @@ commands.create({
   description: "watch for changes",
   exclusive: false,
 
-  defaults() {
+  initialize() {
     this.performTasks = _.debounce(_.bind(this.performTasks, this), 1000);
     this.finished = _.debounce(_.bind(this.finished, this), 100);
+  },
+
+  config() {
     this.isForced = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
   },
 
@@ -19,12 +22,12 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return !commands.switches(['b']) && (commands.has('watch') || 
     commands.switches(['w']));
   },
 
-  execute() {
+  queue(isFromWatch) {
     return new Promise((resolve, reject) => {
       tasks.add(this);
       resolve();
@@ -66,7 +69,7 @@ commands.create({
         if (!this._runningTasks["json"]) {
           this._runningTasks["json"] = true;
           var cmd = commands.get("command", "json");
-          if (cmd.execute) cmd.execute(true);
+          if (cmd.queue) cmd.queue(true);
         }
         this.performTasks();
 
@@ -96,7 +99,7 @@ commands.create({
         if (!this._runningTasks["json"]) {
           this._runningTasks["json"] = true;
           var cmd = commands.get("command", "json");
-          if (cmd.execute) cmd.execute(true);
+          if (cmd.queue) cmd.queue(true);
         }
         this.performTasks();
 
@@ -128,7 +131,7 @@ commands.create({
           this._runningTasks["compiler"] = true;
           var cmd = commands.get("command", "compiler");
           tasks.clear();
-          if (cmd.execute) cmd.execute(true);
+          if (cmd.queue) cmd.queue(true);
         }
         this.performTasks();
 

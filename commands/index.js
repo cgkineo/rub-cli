@@ -13,5 +13,5 @@ require("./047techspec");
 require("./050watch");
 require("./070server");
 require("./080translate");
+require("./085update");
 require("./090wait");
-require("./091update");

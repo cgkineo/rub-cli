@@ -26,11 +26,11 @@ class Patch {
       to: pwd
     }));
 
-    promises.push(this.getRequires().then((requires)=>{
-      var mapped = {};
-      requires.forEach((item)=>{ mapped[item] = true; })
-      //console.log(mapped);
-    }));
+    // promises.push(this.getRequires().then((requires)=>{
+    //   var mapped = {};
+    //   requires.forEach((item)=>{ mapped[item] = true; })
+    //   //console.log(mapped);
+    // }));
 
     return Promise.all(promises).then(()=>{
 
@@ -41,63 +41,63 @@ class Patch {
 
   }
 
-  static getRequires() {
-    return fsg.stats({
-      globs: [
-        "core/js/*.js",
-        "*/*/js/*.js",
-        "*/*/libraries/*.js"
-      ],
-      location: path.join(pwd, "src")
-    }).then((javascripts)=>{
+  // static getRequires() {
+  //   return fsg.stats({
+  //     globs: [
+  //       "core/js/*.js",
+  //       "*/*/js/*.js",
+  //       "*/*/libraries/*.js"
+  //     ],
+  //     location: path.join(pwd, "src")
+  //   }).then((javascripts)=>{
 
-      var allRequires = [];
-      var allDefines = [];
+  //     var allRequires = [];
+  //     var allDefines = [];
 
-      return javascripts.each(function(javascript, next, resolve) {
+  //     return javascripts.each(function(javascript, next, resolve) {
         
-        if (!javascript) return resolve(_.uniq(allRequires).filter(function(item) { return item; }));
+  //       if (!javascript) return resolve(_.uniq(allRequires).filter(function(item) { return item; }));
 
-        var data = fs.readFileSync(javascript.location).toString();
-        var requires = data.match(/require\([\[]{0,1}[^\)\]]*[\]]{0,1}/g);
-        var defines = data.match(/define\([^\[\)]*\[[^\)\]]*\]/g);
+  //       var data = fs.readFileSync(javascript.location).toString();
+  //       var requires = data.match(/require\([\[]{0,1}[^\)\]]*[\]]{0,1}/g);
+  //       var defines = data.match(/define\([^\[\)]*\[[^\)\]]*\]/g);
 
-        if (!requires && !defines) {
-          next();
-          return;
-        }
+  //       if (!requires && !defines) {
+  //         next();
+  //         return;
+  //       }
 
-        if (requires) {
-          requires = requires.map(function(item) {
-            var str = item.substr(8).replace(/\'/g, '"');
-            try {
-              var json = JSON.parse(str);
-            } catch(e) {}
-            if (!(json instanceof Array)) json = [json];
-            return json;
-          });
+  //       if (requires) {
+  //         requires = requires.map(function(item) {
+  //           var str = item.substr(8).replace(/\'/g, '"');
+  //           try {
+  //             var json = JSON.parse(str);
+  //           } catch(e) {}
+  //           if (!(json instanceof Array)) json = [json];
+  //           return json;
+  //         });
 
-          allRequires.push.apply(allRequires, _.flatten(requires));
-        }
+  //         allRequires.push.apply(allRequires, _.flatten(requires));
+  //       }
 
-        if (defines) {
-          defines = defines.map(function(item) {
-            var str = item.substr(item.indexOf("[")).replace(/\'/g, '"');
-            try {
-              var json = JSON.parse(str);
-            } catch(e) {}
-            if (!(json instanceof Array)) json = [json];
-            return json;
-          });
+  //       if (defines) {
+  //         defines = defines.map(function(item) {
+  //           var str = item.substr(item.indexOf("[")).replace(/\'/g, '"');
+  //           try {
+  //             var json = JSON.parse(str);
+  //           } catch(e) {}
+  //           if (!(json instanceof Array)) json = [json];
+  //           return json;
+  //         });
 
-          allRequires.push.apply(allRequires, _.flatten(defines));
-        }
+  //         allRequires.push.apply(allRequires, _.flatten(defines));
+  //       }
 
-        next();
-      });
+  //       next();
+  //     });
 
-    });
-  }
+  //   });
+  // }
 
   static getGruntFile() {
     if (semver.satisfies(adapt.version, ">=2.0.13") && adapt.hasGruntFolder) {

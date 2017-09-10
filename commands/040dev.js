@@ -35,7 +35,7 @@ commands.create({
   index: 41,
   name: "compiler",
 
-  defaults() {
+  config() {
     if (commands.has() || commands.switches(['h']) || commands.options(['help'])) return;
     commands.add("build");
   },
@@ -45,14 +45,14 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
     commands.has(['build']) || commands.switches(['b']) ||
     commands.options(['build']);
   },
 
-  execute(isFromWatch) {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       

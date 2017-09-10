@@ -13,11 +13,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has('clean') || commands.switches(['c', 'F']) || commands.options(['clean', 'forceall']);
   },
 
-  execute(done) {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       //log("Cleaning output folder...");

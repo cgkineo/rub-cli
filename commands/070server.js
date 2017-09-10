@@ -8,7 +8,7 @@ commands.create({
   description: "run server environment",
   exclusive: false,
 
-  defaults() {
+  initialize() {
     this.finished = _.debounce(_.bind(this.finished, this), 100);
     this.expandMimeTypes();
   },
@@ -29,12 +29,12 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has('server') ||
     commands.switches(['s']);
   },
 
-  execute() {
+  queue(isFromWatch) {
     return new Promise((resolve, reject) => {
       tasks.add(this);
       resolve();

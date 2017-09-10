@@ -13,11 +13,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has('zip') || commands.switches(['z']) || commands.options(['zip']);
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       //log("Zipping output folder...");

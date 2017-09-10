@@ -16,11 +16,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has(['tracking:insert']) || commands.has(['tracking-insert']) || commands.has(['trackinginsert']) || commands.options(['trackinginsert']);
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       //log("Inserting tracking ids...");
@@ -66,11 +66,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has(['tracking:remove']) || commands.has(['tracking-remove']) || commands.has(['trackingremove']) || commands.options(['trackingremove']);
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       //log("Removing tracking ids...");
@@ -115,11 +115,11 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has(['tracking:reset']) || commands.has(['tracking-reset'])  || commands.has(['trackingreset']) || commands.options(['trackingreset']);
   },
 
-  execute() {
+  queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
       //log("Resetting tracking ids...");

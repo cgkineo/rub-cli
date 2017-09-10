@@ -32,7 +32,7 @@ class Terminal {
         case "-":
           args.splice(i,1);
           var sliceAt;
-          for (var c = 0, cl = args[0].length; c < cl; c++) {
+          for (var c = 0, cl = arg.length; c < cl; c++) {
             if (arg[c] !== "-") {
               sliceAt = c;
               break;

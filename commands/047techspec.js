@@ -13,12 +13,12 @@ commands.create({
     (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
   },
 
-  shouldExecute() {
+  shouldQueue() {
     return commands.has('techspec') || commands.switches(['t']) || commands.options(['techspec']);
   },
 
   techspec: null,
-  execute() {
+  queue(isFromWatch) {
 
     var cliTechSpecPath = path.join(rootPath, "techspec.json");
     var localTechSpecPath = path.join(pwd, "techspec.json");
