@@ -60,7 +60,12 @@ class Grunt {
     output = output.replace(/Copied.*\n/g, "");
     output = output.replace(/Created.*\n/g, "");
     output = output.replace(/>> SyntaxError/g, "SyntaxError");
-    output = output.replace(/>> .*\n/g, "");
+    //output = output.replace(/>> .*\n/g, "");
+    output = output.replace(/>> No issues found, your JSON is a-ok!/g,"");
+    output = output.replace(/>> [0-9]* files lint free.\n/, "");
+    output = output.replace(/>> .* KiB - .*% = .* KiB\n/,"");
+    output = output.replace(/>> [0-9]* file[s]{0,1} created.*\n/,"");
+
     output = output.replace(/Aborted due to warnings\.\n/g, ""); 
     output = output.replace(/Use --force to continue\.\n/g, "");
     output = output.replace(/No newer files to process\./g, "");
