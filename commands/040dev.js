@@ -71,7 +71,10 @@ commands.create({
       }
 
       if (!isFromWatch) {
-        tasks.add(commands.get("command", "json"));
+        tasks.add(commands.get("command", "json"), {
+          force,
+          isDevelopment
+        });
       }
       
       tasks.add(this, {

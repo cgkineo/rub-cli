@@ -25,6 +25,7 @@ commands.create({
       var force = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
 
       //log("Processing json...");
+      console.log(isDevelopment);
       tasks.add(this, {
         force,
         isDevelopment
@@ -90,6 +91,23 @@ commands.create({
         log(`${namePrefix}Minifying...`);
       }
       gruntTasks.push('minify');
+    }
+
+    if (options.isDevelopment) {
+      return fsg.stats({
+        globs: [ 
+          "*.json",
+          "**/*.json"
+        ],
+        location: path.join(paths.dest.location, "course")
+      }).then((stats)=>{
+
+        stats.forEach((stat)=>{
+          fs.writeFileSync(stat.location, JSON.stringify(JSON.parse(fs.readFileSync(stat.location).toString()), null, 4));
+        });
+
+        return grunt.run(namePrefix, gruntTasks, gruntOpts).then(grunt.output).catch(grunt.error);
+      });
     }
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts).then(grunt.output).catch(grunt.error);
