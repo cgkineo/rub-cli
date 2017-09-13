@@ -62,8 +62,6 @@ commands.create({
 
       log("Checking for rub updates...")
 
-      fs.appendFileSync(pkgPath, " ");
-      fs.truncateSync(pkgPath, stat.size);
       adapt.package.rublastupdatetime = Date.now();
       fs.writeFileSync(path.join(pwd, "package.json"), JSON.stringify(adapt.package, null, 4));
 

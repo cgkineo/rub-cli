@@ -9,7 +9,7 @@ class Patch {
     }
 
     notice("Patching...");
-    if (!semver.satisfies(adapt.version, ">=2.0.13") || !adapt.hasGruntFolder) {
+    if (!semver.satisfies(adapt.version, ">=2.0.13 || >=3.0.0-alpha") || !adapt.hasGruntFolder) {
       warn("rub-cli needs an adapt version >=2.0.13, this is", adapt.version);
       if (!adapt.hasGruntFolder) warn("rub-cli needs the `grunt` folder.");
 
@@ -20,7 +20,7 @@ class Patch {
     var promises = [];
 
 
-    if (semver.satisfies(adapt.version, ">=2.0.13")) {    
+    if (semver.satisfies(adapt.version, ">=2.0.13 || >=3.0.0-alpha")) {    
       // patch all rub files with this folder
       notice(">=2.0.13  reroute grunt");
       promises.push(fsg.copy({
@@ -31,8 +31,8 @@ class Patch {
       }));
     }
 
-    if (semver.satisfies(adapt.version, "<=2.2.1")) {
-      notice("<=2.2.1   fixes 1774,1775,1776,1777,1781,1782,1783,1784");
+    if (semver.satisfies(adapt.version, "<=2.2.1 || <=3.0.0-alpha")) {
+      notice("<=3.0.0-alpha   fixes 1774,1775,1776,1777,1781,1782,1783,1784");
       promises.push(fsg.copy({
         globs: "**",
         location: path.join(rootPath, "patch/2_2_1grunt"),
@@ -115,7 +115,7 @@ class Patch {
   // }
 
   static getGruntFile() {
-    if (semver.satisfies(adapt.version, ">=2.0.13") && adapt.hasGruntFolder) {
+    if (semver.satisfies(adapt.version, ">=2.0.13 || >=3.0.0-alpha") && adapt.hasGruntFolder) {
       return "node_modules/rub/grunt/GruntFile.js";
     }
   }

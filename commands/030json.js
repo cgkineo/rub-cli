@@ -24,8 +24,6 @@ commands.create({
       var isDevelopment = commands.has(['dev']) || commands.switches(['d']) || commands.options(['dev']);
       var force = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
 
-      //log("Processing json...");
-      console.log(isDevelopment);
       tasks.add(this, {
         force,
         isDevelopment
