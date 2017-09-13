@@ -2,6 +2,11 @@
 
 var fs = require("fs");
 
+if (!fs.existsSync(path.join(pwd, "package.json"))) {
+    module.exports = false;
+    return;
+}
+
 var pkgJSON = JSON.parse(fs.readFileSync(path.join(pwd, "package.json")));
 var output = {
     hasNewer: fs.existsSync(path.join(pwd, "node_modules/grunt-newer")),

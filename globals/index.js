@@ -16,6 +16,18 @@ class Globals {
       global.rub = require("./rub");
       global.adapt = require("./adapt");
       global.patch = require("./patch");
+
+      if (!adapt) {
+        return reject("Not in an Adapt folder");
+      }
+
+      if (!adapt.hasGruntFolder) {
+        return reject("Open source `grunt` folder expected. Rub is now built ontop of grunt.");
+      }
+
+      if (rub.isLegacy) {
+        return reject("Legacy rub is installed. Please use './rub' to run the legacy version");
+      }
       
       console.log("");
       let hasRunNpm = false;

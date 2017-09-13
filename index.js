@@ -20,8 +20,11 @@ globals.initialize(process.cwd(), __dirname).then(()=>{
 
 }).catch((err)=>{
 
-  console.log(rub.failText);
-  console.log(err);
+  if (!err) {
+    console.log(rub.failText);
+  } else {
+    console.log(err);
+  }
   process.exit();
   
 });
