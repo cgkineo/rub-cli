@@ -52,10 +52,7 @@ commands.create({
         return;
       }
 
-      var pkgPath = path.join(rootPath, "package.json");
-      var stat = fsg.stat(pkgPath);
-      var age = Date.now() - (stat.mtime);
-      
+      var age = Date.now() - (adapt.package.rublastupdatetime||0);
       if (age < 3600000 && !commands.has("update")) { // an hour since last check
       //if (age < 300000) { // 5 minutes since last check
       // if (age < 60000) { // 1 minutes since last check
@@ -67,6 +64,8 @@ commands.create({
 
       fs.appendFileSync(pkgPath, " ");
       fs.truncateSync(pkgPath, stat.size);
+      adapt.package.rublastupdatetime = Date.now();
+      fs.writeFileSync(path.join(pwd, "package.json"), JSON.stringify(adapt.package, null, 4));
 
       download(rub.versionURL, (data)=>{
         try {
