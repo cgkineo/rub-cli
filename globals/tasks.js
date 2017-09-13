@@ -74,14 +74,56 @@ class Tasks {
 
   static performCommandsOnOutputPaths(task, outputPaths) {
 
-    var promises = [];
+    var simultaneousTasks = parseInt(commands.switches("p")) || 2;
+    var runningTasks = 0;
+
+    var configs = [];
     for (var name in outputPaths) {
-      promises.push(task.cmd.perform.call(task.cmd, name, task.options, outputPaths[name]));
+      configs.push({
+        name: name,
+        outputPath: outputPaths[name]
+      });
     }
 
-    return Promise.all(promises).then(()=>{
+    return new Promise((resolve, reject)=>{
+
+      var next = ()=>{
+
+        if (runningTasks >= simultaneousTasks) return;
+
+        if (configs.length === 0 && runningTasks === 0) {
+          return resolve();
+        }
+        if (configs.length === 0) return;
+
+        var config = configs.shift();
+        var promise = task.cmd.perform.call(task.cmd, config.name, task.options, config.outputPath);
+        if (promise.then) {
+          runningTasks++;
+          promise.then(function() {
+            runningTasks--;
+            logger.pad(2);
+            next();
+          }).catch((err)=>{
+            runningTasks--;
+            console.log(err);
+            next();
+          });
+        }
+        next();
+
+      };
+
+      next();
+
+    }).then(()=>{
       return Tasks.next(outputPaths);
     });
+    
+
+    // return Promise.all(promises).then(()=>{
+    //   return Tasks.next(outputPaths);
+    // });
 
   }
 
