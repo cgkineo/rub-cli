@@ -13,7 +13,7 @@ Please make sure you leave the following files and folders in your development f
 ``grunt``  
 ``config.js``  
 
-Then run ``npm install -g rub-cli``  
+Then run ``npm install -g rub-cli grunt-cli``  
 
 
 ### Execute
