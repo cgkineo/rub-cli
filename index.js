@@ -1,5 +1,10 @@
 'use strict';
 
+process.on('unhandledRejection', (error, promise) => {
+    console.error("== Node detected an unhandled rejection! ==");
+    console.error(error.stack);
+});
+
 var globals = require("./globals/index");
 globals.initialize(process.cwd(), __dirname).then(()=>{
 

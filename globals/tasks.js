@@ -94,11 +94,13 @@ class Tasks {
         if (configs.length === 0 && runningTasks === 0) {
           return resolve();
         }
+
+        //no more tasks to run, but runnning tasks exist
         if (configs.length === 0) return;
 
         var config = configs.shift();
         var promise = task.cmd.perform.call(task.cmd, config.name, task.options, config.outputPath);
-        if (promise.then) {
+        if (promise && promise.then) {
           runningTasks++;
           promise.then(function() {
             runningTasks--;

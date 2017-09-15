@@ -13,15 +13,6 @@ class Layouts {
 
     }).then((layout)=>{
 
-      if (semver.satisfies(adapt.version, "<=2.2.1") && layout.builds && layout['src/course']) {
-      
-        warn("rub-cli cannot work on both builds and src/course due to bugs in this version:", adapt.version);
-        warn("rub-cli please use a version higher than 2.2.1 of the Adapt Framework or delete src/course");
-
-        process.exit();
-
-      }
-
       if (layout['src/course']) {
         layout['src/course'] = { 
           dest: fsg.stat(path.join(pwd, "build")),
