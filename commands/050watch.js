@@ -110,7 +110,13 @@ commands.create({
     if (!this._watchPaths["src:"+paths.src.location]) {
       this._watchPaths["src:"+paths.src.location] = fsg.watch({
         globs: [
-          "**",
+          "*/*/bower.json",
+          "*/*/js/**/*",
+          "*/*/js/*",
+          "*/*/less/**/*",
+          "*/*/less/*",
+          "*/*/templates/**/*",
+          "*/*/templates/*",
           "!course"
         ],
         location: paths.src.location,
@@ -130,7 +136,47 @@ commands.create({
         if (!this._runningTasks["compiler"]) {
           this._runningTasks["compiler"] = true;
           var cmd = commands.get("command", "compiler");
-          tasks.clear();
+          if (cmd.queue) cmd.queue(true);
+        }
+        this.performTasks();
+
+      });
+
+    }
+
+    if (!this._watchPaths["src:assets:"+paths.src.location]) {
+      this._watchPaths["src:assets:"+paths.src.location] = fsg.watch({
+        globs: [
+          "*/*/properties.schema",
+          "*/*/assets/**/*",
+          "*/*/assets/*",
+          "*/*/required/**/*",
+          "*/*/required/*",
+          "*/*/libraries/**/*",
+          "*/*/libraries/*",
+          "*/*/scripts/**/*",
+          "*/*/scripts/*",
+          "*/*/fonts/**/*",
+          "*/*/fonts/*",
+          "!course"
+        ],
+        location: paths.src.location,
+        interval: 200
+      }, (changes)=>{
+
+        if (this._allLayouts) return;
+        this._allLayouts = true;
+
+        var changeTypes = changes.pluck("change");
+        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 || changeTypes.indexOf("deleted") > -1);
+        if (wasAnythingAddedOrDeleted) {
+          log("forcing rebuild...");
+          commands.set("switch", "F");
+        }
+        
+        if (!this._runningTasks["json"]) {
+          this._runningTasks["json"] = true;
+          var cmd = commands.get("command", "json");
           if (cmd.queue) cmd.queue(true);
         }
         this.performTasks();
