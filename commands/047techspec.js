@@ -10,11 +10,13 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has('techspec') || commands.switches(['t']) || commands.options(['techspec']);
+    return commands.has('techspec') || commands.switches(['t']) 
+    || commands.options(['techspec']);
   },
 
   techspec: null,
@@ -42,7 +44,8 @@ commands.create({
   
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
     var namePrefix = name ? name+": " : "";
     if (isVerbose) {
       log(`${namePrefix}Checking Techspec...`);
@@ -127,19 +130,27 @@ commands.create({
         if (file.height && media.height && file.height > media.height) {
           file.flaggedProps.push("height: " + file.height + "px");
         } 
-        if (file.ratio && media.ratio && Math.round(file.ratio*10) != Math.round(eval(media.ratio)*10)) {
+        if (file.ratio && media.ratio 
+          && Math.round(file.ratio*10) != Math.round(eval(media.ratio)*10)) {
           file.flaggedProps.push("ratio: " + file.ratio);
         } 
-        if (file.audio_bitrate && media.audio_bitrate && file.audio_bitrate > this.textSizeToBytes(media.audio_bitrate) && file.audio_bitrate !== "N/A") {
+        if (file.audio_bitrate && media.audio_bitrate 
+          && file.audio_bitrate > this.textSizeToBytes(media.audio_bitrate) 
+          && file.audio_bitrate !== "N/A") {
           file.flaggedProps.push("audio bitrate: " + this.bytesSizeToString(file.audio_bitrate, "kb") + "/s");
         } 
-        if (file.audio_channel_layout && media.audio_channel_layout && file.audio_channel_layout !== media.audio_channel_layout && file.audio_channel_layout !== "N/A") {
+        if (file.audio_channel_layout && media.audio_channel_layout 
+          && file.audio_channel_layout !== media.audio_channel_layout 
+          && file.audio_channel_layout !== "N/A") {
           file.flaggedProps.push("audio channels: " + file.audio_channel_layout);
         } 
-        if (file.video_bitrate && media.video_bitrate && file.video_bitrate > this.textSizeToBytes(media.video_bitrate) && file.video_bitrate !== "N/A") {
+        if (file.video_bitrate && media.video_bitrate 
+          && file.video_bitrate > this.textSizeToBytes(media.video_bitrate) 
+          && file.video_bitrate !== "N/A") {
           file.flaggedProps.push("video bitrate: " + this.bytesSizeToString(file.video_bitrate, "kb") + "/s");
         } 
-        if (media.video_fps && file.video_fps && file.video_fps > media.video_fps && file.video_fps !== "N/A") {
+        if (media.video_fps && file.video_fps 
+          && file.video_fps > media.video_fps && file.video_fps !== "N/A") {
           file.flaggedProps.push("video fps: " + file.video_fps);
         }
         if (media.video_codec) {

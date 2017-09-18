@@ -10,11 +10,13 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has('zip') || commands.switches(['z']) || commands.options(['zip']);
+    return commands.has('zip') || commands.switches(['z']) 
+    || commands.options(['zip']);
   },
 
   queue(isFromWatch) {
@@ -29,7 +31,8 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
     var namePrefix = name ? name+": " : "";
     if (isVerbose) {
       log(`${namePrefix}Zipping...`);
@@ -38,7 +41,9 @@ commands.create({
     }
 
     var now = (new Date());
-    var scoDate = (now.getYear()+"").substr(1) + twoDigit(now.getMonth()+1) + twoDigit(now.getDate())  + twoDigit(now.getHours()) + twoDigit(now.getMinutes()) + twoDigit(now.getSeconds());
+    var scoDate = (now.getYear()+"").substr(1) + twoDigit(now.getMonth()+1) 
+    + twoDigit(now.getDate())  + twoDigit(now.getHours()) 
+    + twoDigit(now.getMinutes()) + twoDigit(now.getSeconds());
 
     var outputDir = path.join(pwd, "zips");
     fsg.mkdir(outputDir);

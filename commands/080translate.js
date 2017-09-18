@@ -14,7 +14,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -32,7 +33,8 @@ commands.create({
   },
 
   perform(name, options, paths) {
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
 
     var masterLang = commands.options("masterLang") || "en";
     var format = commands.options("format") || "csv";
@@ -56,7 +58,8 @@ commands.create({
       log(`${namePrefix}Exporting translation...`);
     }
 
-    return grunt.run(namePrefix, ["translate:export"], gruntOpts).then(grunt.output).catch(grunt.error);
+    return grunt.run(namePrefix, ["translate:export"], gruntOpts)
+    .then(grunt.output).catch(grunt.error);
 
   }
 
@@ -78,7 +81,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -96,7 +100,8 @@ commands.create({
   },
 
   perform(name, options, paths) {
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
 
     var masterLang = commands.options("masterLang") || "en";
     var format = commands.options("format") || "csv";
@@ -127,7 +132,8 @@ commands.create({
       log(`${namePrefix}Importing translation...`);
     }
 
-    return grunt.run(namePrefix, ["translate:import"], gruntOpts).then(grunt.output).catch(grunt.error);
+    return grunt.run(namePrefix, ["translate:import"], gruntOpts)
+    .then(grunt.output).catch(grunt.error);
   }
 
 });

@@ -35,7 +35,9 @@ class Logger {
   static log() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     if (Logger.padding !== undefined) {
@@ -47,7 +49,9 @@ class Logger {
   static warn() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);;
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     text = text.replace(/\n/g, Logger.padding);
@@ -60,7 +64,9 @@ class Logger {
   static notice() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);;
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     if (Logger.padding !== undefined) {
@@ -72,7 +78,9 @@ class Logger {
   static logThrough() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);;
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     if (Logger.padding !== undefined) {
@@ -84,7 +92,9 @@ class Logger {
   static warnThrough() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);;
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     if (Logger.padding !== undefined) {
@@ -96,7 +106,9 @@ class Logger {
   static noticeThrough() {
     let args = Array.prototype.slice.call(arguments, 0);
     if (args.length === 1 && args[0] === undefined) return;
-    if (args.length === 1 && typeof args[0] === "object") return Logger.output(args);;
+    if (args.length === 1 && typeof args[0] === "object") {
+      return Logger.output(args);;
+    }
     if (args.length === 0) args.push("");
     var text = args.join(" ");
     if (Logger.padding !== undefined) {

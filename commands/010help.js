@@ -10,7 +10,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -48,7 +49,8 @@ commands.create({
       commands.get("commands").forEach((handler)=>{
 
         if (!handler.shouldHelp || !handler.shouldHelp()) return;
-        if ((!handler.command || !handler.command.length) && !handler.description && !handler.switch) return;
+        if ((!handler.command || !handler.command.length) 
+          && !handler.description && !handler.switch) return;
 
         var command = handler.command || [""];
         command = command[0];

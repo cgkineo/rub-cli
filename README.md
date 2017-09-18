@@ -15,6 +15,14 @@ Please make sure you leave the following files and folders in your development f
 
 Then run ``npm install -g rub-cli grunt-cli``  
 
+### Retrofitting
+1. Make sure your Adapt framework is >=2.0.13
+2. Go grab the opensource ``grunt`` folder, ``package.json`` and ``config.js``  
+put them in your development folder.
+3. If you have one, eelete your node_modules folder.
+4. If you have a buildkit foldert, make sure to uninstall it  
+``adapt-buildkit uninstall``
+
 
 ### Execute
 

@@ -13,11 +13,15 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has(['tracking:insert']) || commands.has(['tracking-insert']) || commands.has(['trackinginsert']) || commands.options(['trackinginsert']);
+    return commands.has(['tracking:insert']) 
+    || commands.has(['tracking-insert']) 
+    || commands.has(['trackinginsert']) 
+    || commands.options(['trackinginsert']);
   },
 
   queue(isFromWatch) {

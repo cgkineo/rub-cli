@@ -10,7 +10,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   }
 
 });
@@ -25,7 +26,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   }
 
 });
@@ -36,13 +38,15 @@ commands.create({
   name: "compiler",
 
   config() {
-    if (commands.has() || commands.switches(['h']) || commands.options(['help'])) return;
+    if (commands.has() || commands.switches(['h']) 
+      || commands.options(['help'])) return;
     commands.add("build");
   },
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -60,8 +64,10 @@ commands.create({
         commands.set("switch", "w");
       }
 
-      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) || commands.options(['dev']);
-      var force = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
+      var isDevelopment = commands.has(['dev']) 
+      || commands.switches(['d']) || commands.options(['dev']);
+      var force = commands.switches(['f','F']) 
+      || commands.options(['force', 'forceall']) || false;
 
       if (isDevelopment) {
         //log("Performing development build...");
@@ -91,7 +97,8 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") 
+    || commands.switches(['v']) || commands.options(['verbose']);
 
     var gruntOpts = {};
 
@@ -116,7 +123,8 @@ commands.create({
       hasNewerPrefix = false;
     }
 
-    var hasExistingSourcemaps = fs.existsSync(path.join(paths.dest.location, "adapt/js/adapt.min.js.map"));
+    var sourcemapPath = path.join(paths.dest.location, "adapt/js/adapt.min.js.map");
+    var hasExistingSourcemaps = fs.existsSync(sourcemapPath);
     if (!hasExistingSourcemaps) {
       // is either empty or was previously built without sourcemaps
       hasNewerPrefix = false;
@@ -148,7 +156,8 @@ commands.create({
       gruntTasks.push('minify');
     }
 
-    return grunt.run(namePrefix, gruntTasks, gruntOpts).then(grunt.output).catch(grunt.error);
+    return grunt.run(namePrefix, gruntTasks, gruntOpts)
+    .then(grunt.output).catch(grunt.error);
 
   }
 

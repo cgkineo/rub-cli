@@ -41,7 +41,9 @@ class Commands {
         let isRemoved = false;
         Commands._cmdObjects.forEach((handler)=>{
           if (!handler.command) return;
-          if (!(handler.command instanceof Array)) handler.command = [handler.command];
+          if (!(handler.command instanceof Array)) {
+            handler.command = [handler.command];
+          }
           if (handler.command.indexOf(k) === -1) return;
           Commands._commands.push.apply(Commands._commands, handler.command);
           isRemoved = true;
@@ -57,7 +59,9 @@ class Commands {
         var found = false;
         Commands._cmdObjects.forEach((handler)=>{
           if (!handler.option) return;
-          if (!(handler.option instanceof Array)) handler.option = [handler.option];
+          if (!(handler.option instanceof Array)) {
+            handler.option = [handler.option];
+          }
           if (handler.option.indexOf(k) === -1) return;
           Commands._options[k] = Commands._switches[k];
           found = true;

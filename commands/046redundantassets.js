@@ -10,11 +10,13 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has('redundantassets') || commands.switches(['r']) || commands.options(['redundantassets']);
+    return commands.has('redundantassets') || commands.switches(['r']) 
+    || commands.options(['redundantassets']);
   },
 
   queue(isFromWatch) {
@@ -28,7 +30,8 @@ commands.create({
   
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
     var namePrefix = name ? name+": " : "";
     if (isVerbose) {
       log(`${namePrefix}Checking for redundant assets...`);
@@ -196,7 +199,9 @@ commands.create({
     
       var storedAssets = assets.pluck('location');
       var difference = _.difference(storedAssets, fileAssetListPaths);
-      var redundants = difference.map((item)=>{ return fsg.rel(item, paths.dest.location); });
+      var redundants = difference.map((item)=>{ 
+        return fsg.rel(item, paths.dest.location); 
+      });
 
       redundants.forEach((redundant)=>{
         log(`${namePrefix}Asset redundant: ` + redundant);

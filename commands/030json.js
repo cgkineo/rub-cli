@@ -10,19 +10,23 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has(['json']) || commands.switches(['j']) || commands.options(['json']);
+    return commands.has(['json']) || commands.switches(['j']) 
+    || commands.options(['json']);
   },
 
   queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
 
-      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) || commands.options(['dev']);
-      var force = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
+      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) 
+      || commands.options(['dev']);
+      var force = commands.switches(['f','F']) 
+      || commands.options(['force', 'forceall']) || false;
 
       tasks.add(this, {
         force,
@@ -36,7 +40,8 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) || commands.options(['verbose']);
+    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    || commands.options(['verbose']);
     var isBuilding = commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
     commands.has(['build']) || commands.switches(['b']) ||
@@ -101,14 +106,18 @@ commands.create({
       }).then((stats)=>{
 
         stats.forEach((stat)=>{
-          fs.writeFileSync(stat.location, JSON.stringify(JSON.parse(fs.readFileSync(stat.location).toString()), null, 4));
+          var minified = JSON.parse(fs.readFileSync(stat.location).toString());
+          var unminified = JSON.stringify(minified, null, 4);
+          fs.writeFileSync(stat.location, unminified);
         });
 
-        return grunt.run(namePrefix, gruntTasks, gruntOpts).then(grunt.output).catch(grunt.error);
+        return grunt.run(namePrefix, gruntTasks, gruntOpts)
+        .then(grunt.output).catch(grunt.error);
       });
     }
 
-    return grunt.run(namePrefix, gruntTasks, gruntOpts).then(grunt.output).catch(grunt.error);
+    return grunt.run(namePrefix, gruntTasks, gruntOpts)
+    .then(grunt.output).catch(grunt.error);
 
   }
 

@@ -9,7 +9,8 @@ commands.create({
   exclusive: false,
 
   config() {
-    if (!commands.has('force') || commands.has("dev") || commands.has("build") || commands.has("json")) return;
+    if (!commands.has('force') || commands.has("dev") 
+      || commands.has("build") || commands.has("json")) return;
     commands.prepend("build");
   },
 
@@ -29,7 +30,8 @@ commands.create({
   exclusive: false,
 
   config() {
-    if (!commands.has('forceall') || commands.has("dev")|| commands.has("build") || commands.has("json")) return;
+    if (!commands.has('forceall') || commands.has("dev")
+      || commands.has("build") || commands.has("json")) return;
     commands.prepend("build");
   },
 

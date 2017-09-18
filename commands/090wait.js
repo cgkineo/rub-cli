@@ -14,14 +14,16 @@ commands.create({
   
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
     var server = commands.get("command", "server");
     var watch = commands.get("command", "watch");
     return (commands.has('wait') || 
-    commands.switches(['W'])) && !(watch.shouldQueue() || server.shouldQueue());
+    commands.switches(['W'])) && !(watch.shouldQueue() 
+    || server.shouldQueue());
   },
 
   queue(isFromWatch) {

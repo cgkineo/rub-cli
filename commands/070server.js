@@ -26,7 +26,8 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -123,8 +124,9 @@ commands.create({
       var injectScript = false;
       if (req.headers.referer !== undefined) {
         var stat = this.urlStat(req.headers.referer);
-        if (stat.isDirectory() && req.stat.filename.indexOf(stat.filename) > -1) injectScript = true;
-        else if (stat.filename === req.stat.filename) injectScript = true;
+        if (stat.isDirectory() && req.stat.filename.indexOf(stat.filename) > -1) {
+          injectScript = true;
+        } else if (stat.filename === req.stat.filename) injectScript = true;
       } else injectScript = true;
 
       if (injectScript) {
@@ -189,7 +191,9 @@ commands.create({
 
     req.stat = stat;
 
-    if (stat.isDirectory()) return this.serveIndex(req, res, (req,res) => { this.next(req,res); });
+    if (stat.isDirectory()) return this.serveIndex(req, res, (req,res) => { 
+      this.next(req,res); 
+    });
     this.next(req,res );
 
   },

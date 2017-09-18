@@ -1,15 +1,15 @@
 {
   "name": "rub-cli",
   "commonName": "rub-cli",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run 'npm install -g rub-cli'",
   "scripts": {},
   "author": "Oliver Foster, Kineo",
   "license": "GPL-3.0",
-  "repository": "https://github.com/oliverfoster/rub-cli",
-  "versionURL": "https://raw.githubusercontent.com/oliverfoster/rub-cli/master/package.json",
+  "repository": "https://github.com/cgkineo/rub-cli",
+  "versionURL": "https://raw.githubusercontent.com/cgkineo/rub-cli/master/package.json",
   "dependencies": {
     "chalk": "^2.1.0",
     "fs-glob": "^1.1.14",

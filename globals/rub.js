@@ -2,7 +2,8 @@
 
 var fs = require("fs");
 
-var isLegacy = fs.existsSync(path.join(process.cwd(), "./buildkit")) || fs.existsSync(path.join(process.cwd(), "./rub"));
+var isLegacy = fs.existsSync(path.join(process.cwd(), "./buildkit")) 
+|| fs.existsSync(path.join(process.cwd(), "./rub"));
 
 var pkgJSON = JSON.parse(fs.readFileSync(path.join(rootPath, "package.json")));
 var output = {

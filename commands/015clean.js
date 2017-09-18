@@ -10,11 +10,13 @@ commands.create({
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has('clean') || commands.switches(['c', 'F']) || commands.options(['clean', 'forceall']);
+    return commands.has('clean') || commands.switches(['c', 'F']) 
+    || commands.options(['clean', 'forceall']);
   },
 
   queue(isFromWatch) {

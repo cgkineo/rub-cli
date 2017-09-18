@@ -14,12 +14,14 @@ commands.create({
   },
 
   config() {
-    this.isForced = commands.switches(['f','F']) || commands.options(['force', 'forceall']) || false;
+    this.isForced = commands.switches(['f','F']) 
+    || commands.options(['force', 'forceall']) || false;
   },
 
   shouldHelp() {
     return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) 
+      || commands.options(['help'])));
   },
 
   shouldQueue() {
@@ -47,7 +49,9 @@ commands.create({
 
     if (paths.isServerBuild && !this._watchPaths["course:"+name]) {
 
-      this._watchPaths["course:"+name] = this._clearWatchPaths["course:"+name] = fsg.watch({
+      this._watchPaths["course:"+name] =
+      this._clearWatchPaths["course:"+name] = 
+      fsg.watch({
         globs: [
           "course/**"
         ],
@@ -60,7 +64,8 @@ commands.create({
         this._changedLayouts[name] = paths;
 
         var changeTypes = changes.pluck("change");
-        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 || changeTypes.indexOf("deleted") > -1);
+        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 
+          || changeTypes.indexOf("deleted") > -1);
         if (wasAnythingAddedOrDeleted) {
           log("forcing rebuild...");
           commands.set("switch", "F");
@@ -77,7 +82,9 @@ commands.create({
 
     } else if (!paths.isServerBuild && !this._watchPaths["src/course"]) {
 
-      this._watchPaths["src/course"] = this._clearWatchPaths["src/course"] = fsg.watch({
+      this._watchPaths["src/course"] = 
+      this._clearWatchPaths["src/course"] = 
+      fsg.watch({
         globs: [
           "course/**"
         ],
@@ -90,7 +97,8 @@ commands.create({
         this._changedLayouts["src/course"] = paths;
 
         var changeTypes = changes.pluck("change");
-        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 || changeTypes.indexOf("deleted") > -1);
+        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 
+          || changeTypes.indexOf("deleted") > -1);
         if (wasAnythingAddedOrDeleted) {
           log("forcing rebuild...");
           commands.set("switch", "F");
@@ -127,7 +135,8 @@ commands.create({
         this._allLayouts = true;
 
         var changeTypes = changes.pluck("change");
-        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 || changeTypes.indexOf("deleted") > -1);
+        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 
+          || changeTypes.indexOf("deleted") > -1);
         if (wasAnythingAddedOrDeleted) {
           log("forcing rebuild...");
           commands.set("switch", "F");
@@ -168,7 +177,8 @@ commands.create({
         this._allLayouts = true;
 
         var changeTypes = changes.pluck("change");
-        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 || changeTypes.indexOf("deleted") > -1);
+        var wasAnythingAddedOrDeleted = (changeTypes.indexOf("added") > -1 
+          || changeTypes.indexOf("deleted") > -1);
         if (wasAnythingAddedOrDeleted) {
           log("forcing rebuild...");
           commands.set("switch", "F");
