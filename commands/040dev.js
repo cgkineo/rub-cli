@@ -60,7 +60,7 @@ commands.create({
 
     return new Promise((resolve, reject) => {
       
-      if (commands.has(['dev'])) {
+      if (commands.has(['dev']) || commands.switches(['d'])) {
         commands.set("switch", "w");
       }
 
