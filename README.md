@@ -23,6 +23,7 @@ put them in your development folder.
 5. If you have one, delete your node_modules folder.
 6. If you have a buildkit folder, make sure to uninstall it  
 ``adapt-buildkit uninstall``
+You should also ensure that `theme.json` in your theme has the correct `screenSize` settings defined - this file was not used by rub but *is* used by rub-cli!
 
 ### Execute
 
