@@ -5,7 +5,6 @@ Extends the ``grunt`` commands which come with Adapt Framework.
 ### Support
 Supports only Adapt versions >=2.0.13.
 
-
 ### Installation
 Please make sure you leave the following files and folders in your development folder:  
 
@@ -24,7 +23,6 @@ put them in your development folder.
 5. If you have one, delete your node_modules folder.
 6. If you have a buildkit folder, make sure to uninstall it  
 ``adapt-buildkit uninstall``
-
 
 ### Execute
 
@@ -61,4 +59,30 @@ Adapt Buildkit (rub-cli)
     -W, wait             wait for keypress
   Finished.
 
+```
+
+### Including/excluding plugins
+If one (or more) of your modules only uses a subset of the installed plugins, you can specify which should be included by adding the following to the config.json for that module:
+```json
+"build": {
+	"includes": [
+		"adapt-contrib-media",
+		"adapt-contrib-narrative",
+		"adapt-contrib-bookmarking",
+		"adapt-contrib-pageLevelProgress",
+		"adapt-quicknav"
+	]
+}
+```
+Or, if listing plugins that should be excluded is easier:
+```json
+"build": {
+	"excludes": [
+		"adapt-contrib-media",
+		"adapt-contrib-narrative",
+		"adapt-contrib-bookmarking",
+		"adapt-contrib-pageLevelProgress",
+		"adapt-quicknav"
+	]
+}
 ```
