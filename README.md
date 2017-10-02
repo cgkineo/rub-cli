@@ -62,7 +62,7 @@ Adapt Buildkit (rub-cli)
 ```
 
 ### Including/excluding plugins
-If one (or more) of your modules only uses a subset of the installed plugins, you can specify which should be included by adding the following to the config.json for that module:
+If one (or more) of your modules only uses a subset of the installed plugins, you can specify which should be included by adding the following to the `config.json` for that module:
 ```json
 "build": {
 	"includes": [
