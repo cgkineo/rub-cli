@@ -73,7 +73,7 @@ commands.create({
           return;
         }
         if (!semver.lt(rub.version, data.version)) {
-          notice("No updated needed.");
+          notice("No updates needed.");
           notice("Current:", rub.version)
           notice("Latest:", data.version);
           return resolve();
