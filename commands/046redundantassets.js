@@ -46,10 +46,12 @@ commands.create({
     var cssAssetListPaths = [];
     var fileAssetListPaths = [];
 
+    var jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || "json";
+
     return fsg.stats({
       globs: [
-        "course/*.json",
-        "course/**/*.json"
+        "course/*."+jsonext,
+        "course/**/*."+jsonext
       ],
       location: paths.dest.location
     }).then((jsons)=>{

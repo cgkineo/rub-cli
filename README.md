@@ -50,6 +50,8 @@ Adapt Buildkit (rub-cli)
     tracking:reset       reset block tracking ids
     -j, json             process json
     -b, build            production build (no sourcemaps, with uglify)
+    -M, minify           minify json
+    -P, prettify         prettify json
     -d, dev              development build (with sourcemaps, no uglify)
     -z, zip              zip output folders
     -r, redundantassets  check for redundant assets
@@ -61,4 +63,24 @@ Adapt Buildkit (rub-cli)
     -W, wait             wait for keypress
   Finished.
 
+```
+
+### Tech Spec
+1. Run ```rub techspec```
+2. Edit ```techspec.json```
+3. Run ```rub techspec```
+
+### JSON extensions
+Edit your Adapt package.json to include:
+```json
+{
+    "name": "adapt_framework",
+    "version": "2.2.2",
+    "description": "Adapt Learning output framework",
+    "grunt": {
+        "options": {
+            "jsonext": "txt"
+        }
+    }
+}
 ```

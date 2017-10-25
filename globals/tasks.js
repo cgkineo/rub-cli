@@ -62,6 +62,10 @@ class Tasks {
 
   static next(outputPaths) {
 
+    Tasks._items.sort((a,b)=>{
+      return a.cmd.index-b.cmd.index;
+    });
+
     logger.pad(2);
     let task = Tasks._items.shift();
     if (!task || !outputPaths) {

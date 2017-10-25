@@ -8,6 +8,7 @@ require("./012flags");
 require("./015clean");
 require("./020tracking");
 require("./030json");
+require("./031jsonminify");
 require("./040dev");
 require("./045zip");
 require("./046redundantassets");

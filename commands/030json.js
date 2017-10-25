@@ -87,34 +87,7 @@ commands.create({
       'create-json-config',
       'tracking-insert',
       'replace'
-    ])
-
-    if (adapt.hasMinify && !options.isDevelopment && isBuilding) {
-      if (isVerbose) {
-        log(`${namePrefix}Minifying...`);
-      }
-      gruntTasks.push('minify');
-    }
-
-    if (options.isDevelopment) {
-      return fsg.stats({
-        globs: [ 
-          "*.json",
-          "**/*.json"
-        ],
-        location: path.join(paths.dest.location, "course")
-      }).then((stats)=>{
-
-        stats.forEach((stat)=>{
-          var minified = JSON.parse(fs.readFileSync(stat.location).toString());
-          var unminified = JSON.stringify(minified, null, 4);
-          fs.writeFileSync(stat.location, unminified);
-        });
-
-        return grunt.run(namePrefix, gruntTasks, gruntOpts)
-        .then(grunt.output).catch(grunt.error);
-      });
-    }
+    ]);
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
     .then(grunt.output).catch(grunt.error);

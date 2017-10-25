@@ -7,6 +7,9 @@ class Grunt {
     options = options || {};
     options['gruntfile'] = path.join(pwd, patch.getGruntFile());
     options['base'] = pwd;
+    if (adapt && adapt.grunt && adapt.grunt.options) {
+      _.extend(options, adapt.grunt.options);
+    }
 
     var opts = "";
     if (options && Object.keys(options).length) {

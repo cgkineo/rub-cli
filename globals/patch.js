@@ -6,7 +6,7 @@ class Patch {
 
     var promises = [];
 
-    if (semver.satisfies(adapt.version, ">=2.0.13 || >=3.0.0-alpha")) {    
+    if (semver.satisfies(adapt.version, ">=2.0.13 || <=3.0.0")) {    
       // patch all rub files with this folder
       // notice(">=2.0.13  reroute grunt");
       // always patch node_modules due to svn transport of package.json
@@ -23,13 +23,13 @@ class Patch {
     }
 
     notice("Patching...");
-    if (!semver.satisfies(adapt.version, ">=2.0.13 || >=3.0.0-alpha") || !adapt.hasGruntFolder) {
+    if (!semver.satisfies(adapt.version, ">=2.0.13 || <=3.0.0") || !adapt.hasGruntFolder) {
       warn("rub-cli needs an adapt version >=2.0.13, this is", adapt.version);
       if (!adapt.hasGruntFolder) warn("rub-cli needs the `grunt` folder.");
       process.exit();
     }
 
-    if (semver.satisfies(adapt.version, "<=2.2.1 || <=3.0.0-alpha")) {
+    if (semver.satisfies(adapt.version, "<=2.2.1 || <=3.0.0")) {
       notice("<=3.0.0-alpha   fixes 1774,1775,1776,1777,1781,1782,1783,1784");
       promises.push(fsg.copy({
         globs: "**",
