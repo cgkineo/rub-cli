@@ -26,6 +26,9 @@ put them in your development folder.
 
 You should also ensure that `theme.json` in your theme has the correct `screenSize` settings defined - this file was not used by rub but *is* used by rub-cli!
 
+### Differences between ``rub`` and ``rub-cli``
+TBC
+
 ### Execute
 
 Run ``rub dev``
@@ -109,4 +112,14 @@ Or, if listing plugins that should be excluded is easier:
 		"adapt-quicknav"
 	]
 }
+```
+
+### Changing ``.json`` file endings
+Add to Adapt framework ``package.json``
+```json
+    "grunt": {
+        "options": {
+            "jsonext": "txt"
+        }
+    }
 ```
