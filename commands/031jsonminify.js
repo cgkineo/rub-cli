@@ -3,7 +3,10 @@
 commands.create({
 
   index: 31,
-  command: "minify",
+  command: [
+    "minify",
+    "uglify"
+  ],
   switch: "M",
   description: "minify json",
   exclusive: false,
@@ -11,12 +14,13 @@ commands.create({
   shouldHelp() {
     return commands.has(['help', undefined]) || 
     (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+    || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has(['minify']) || commands.switches(['M']) 
-    || commands.options(['minify']);
+    return commands.has(['minify']) || commands.switches(['M'])
+    || commands.options(['minify']) || commands.has(['uglify'])
+    || commands.switches(['U']) || commands.options(['uglify']);
   },
 
   queue(isFromWatch) {
@@ -99,7 +103,8 @@ commands.create({
 
   shouldQueue() {
     return commands.has(['prettify']) || commands.switches(['P']) 
-    || commands.options(['prettify']);
+    || commands.options(['prettify']) || commands.has(['dev']) 
+    || commands.switches(['d']) || commands.options(['dev']);
   },
 
   queue(isFromWatch) {

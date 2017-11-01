@@ -149,12 +149,12 @@ commands.create({
       gruntTasks.push('scripts:adaptpostbuild');
     }
 
-    if (adapt.hasMinify && !options.isDevelopment) {
-      if (isVerbose) {
-        log(`${namePrefix}Minifying...`);
-      }
-      gruntTasks.push('minify');
-    }
+    // if (adapt.hasMinify && !options.isDevelopment) {
+    //   if (isVerbose) {
+    //     log(`${namePrefix}Minifying...`);
+    //   }
+    //   gruntTasks.push('minify');
+    // }
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
     .then(grunt.output).catch(grunt.error);

@@ -39,10 +39,21 @@ class Globals {
         console.log("Running 'npm install' in your development folder...");
         hasRunNpm = true;
 
-        let exec = require('child_process').exec;
-        let child = exec('npm install', { 
+        let spawn = require('child_process').spawn;
+        let child = spawn((/^win/.test(process.platform) ? 'npm.cmd' : 'npm'), ['install'], { 
           cwd: pwd
-        }, function(error) {
+        });
+
+        child.stdout.pipe(process.stdout);
+        child.stderr.pipe(process.stderr);
+
+        child.on("error", function(error) {
+          console.error("ERROR: npm install failed.");
+          console.log(error);
+          reject(error);
+        });
+
+        child.on("exit", function(error) {
           if (error && error.signal) {
             console.error("ERROR: npm install failed.");
             //console.log(error);
