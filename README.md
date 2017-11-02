@@ -27,7 +27,12 @@ put them in your development folder.
 You should also ensure that `theme.json` in your theme has the correct `screenSize` settings defined - this file was not used by rub but *is* used by rub-cli!
 
 ### Differences between ``rub`` and ``rub-cli``
-TBC
+#### Flags vs commands
+In an effort to allow the better chaining of directives I have slightly changed the behaviour of flags and commands.
+Commands will typically run at the exclusion of all other non-dependent tasks, such that ``rub prettify`` will only perform a json prettification task. Flags now assume a build should happen, such that ``rub -P`` will build and prettify, ``rub -Pz`` will build, prettify and zip, etc.
+
+#### Zipping
+This no long attempts to send the zip files to your desktop. It will instead make a folder called ``zips`` in your project root.
 
 ### Execute
 
