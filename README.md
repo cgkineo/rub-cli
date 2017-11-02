@@ -82,21 +82,6 @@ Adapt Buildkit (rub-cli)
 2. Edit ```techspec.json```
 3. Run ```rub techspec```
 
-### JSON extensions
-Edit your Adapt package.json to include:
-```json
-{
-    "name": "adapt_framework",
-    "version": "2.2.2",
-    "description": "Adapt Learning output framework",
-    "grunt": {
-        "options": {
-            "jsonext": "txt"
-        }
-    }
-}
-```
-
 ### Including/excluding plugins
 If one (or more) of your modules only uses a subset of the installed plugins, you can specify which should be included by adding the following to the `config.json` for that module:
 ```json
