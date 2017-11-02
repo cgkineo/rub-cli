@@ -34,6 +34,10 @@ Commands will typically run at the exclusion of all other non-dependent tasks, s
 #### Zipping
 This no long attempts to send the zip files to your desktop. It will instead make a folder called ``zips`` in your project root.
 
+#### Build configurations
+Exclusions and file endings are handled by grunt (see directions below on how to configure).  
+Tech specs are still handled by ``rub`` (see directions below).
+
 ### Execute
 
 Run ``rub dev``
