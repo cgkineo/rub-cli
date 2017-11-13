@@ -38,6 +38,18 @@ This no long attempts to send the zip files to your desktop. It will instead mak
 Exclusions and file endings are handled by grunt (see directions below on how to configure).  
 Tech specs are still handled by ``rub`` (see directions below).
 
+#### IMSMANIFEST.XML variable replacement
+The new variable declaration mechanism follows the Adapt open source style.
+```
+@@course.title
+@@course.customName.subAttributeName
+@@config.anyOtherName
+```
+You can only use variables from config and course.
+
+#### Tracking Ids
+These three commands (``tracking:remove``, ``tracking:insert`` and ``tracking:remove``) will change the ``src/course`` if you’re using the Adapt Learning structure of the ``builds/moduleName/course/`` files otherwise.
+
 ### Execute
 
 Run ``rub dev``
