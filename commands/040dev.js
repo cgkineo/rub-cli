@@ -141,7 +141,8 @@ commands.create({
     var gruntTasks = [
       `${newerPrefix}handlebars`,
       `${newerPrefix}javascript${typePostfix}`,
-      `${newerPrefix}less${typePostfix}`
+      `${newerPrefix}less${typePostfix}`,
+      `build-config`
     ];
 
     if (adapt.hasScript) {
