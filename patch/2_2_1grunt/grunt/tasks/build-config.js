@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         var options = this.options({});
 
         var buildConfig = Helpers.generateConfigData();
-        var buildConfigPath = path.join(buildConfig.outputdir, "adapt/js/build.js");
+        var buildConfigPath = path.join(buildConfig.outputdir, "adapt/js/build.min.js");
 
         // add package json
         buildConfig.package = grunt.file.readJSON(path.join(buildConfig.root, 'package.json'));
