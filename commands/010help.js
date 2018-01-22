@@ -29,7 +29,7 @@ commands.create({
       var tabSize = 1;
       var maxTabs = 1;
 
-      log("Usage:", "./rub [options] [courses...]");
+      log("Usage:", "rub [options] [courses...]");
       log();
       log("Options:");
       log();
