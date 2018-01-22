@@ -59,7 +59,7 @@ $ rub help
 
 Adapt Buildkit (rub-cli)
 
-  Usage: ./rub [options] [courses...]
+  Usage: rub [options] [courses...]
 
   Options:
 
