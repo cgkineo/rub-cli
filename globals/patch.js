@@ -6,7 +6,7 @@ class Patch {
 
     var promises = [];
 
-    if (semver.satisfies(adapt.version, ">=2.0.13 || <=3.0.0")) {    
+    if (semver.satisfies(adapt.version, ">=2.0.13 || <=3.0.0")) {
       // patch all rub files with this folder
       // notice(">=2.0.13  reroute grunt");
       // always patch node_modules due to svn transport of package.json
@@ -29,7 +29,7 @@ class Patch {
       process.exit();
     }
 
-    if (semver.satisfies(adapt.version, "<=2.2.1 || <=3.0.0")) {
+    if (semver.satisfies(adapt.version, "<=2.2.1 || <3.0.0")) {
       notice("<=3.0.0-alpha   fixes 1774,1775,1776,1777,1781,1782,1783,1784");
       promises.push(fsg.copy({
         globs: "**",
@@ -50,7 +50,7 @@ class Patch {
       adapt.package.rubpatchversion = rub.version;
       var unminified = JSON.stringify(adapt.package, null, 4);
       fs.writeFileSync(path.join(pwd, "package.json"), unminified);
-      
+
     });
 
   }
@@ -69,7 +69,7 @@ class Patch {
   //     var allDefines = [];
 
   //     return javascripts.each(function(javascript, next, resolve) {
-        
+
   //       if (!javascript) return resolve(_.uniq(allRequires).filter(function(item) { return item; }));
 
   //       var data = fs.readFileSync(javascript.location).toString();
