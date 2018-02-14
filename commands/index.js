@@ -10,6 +10,7 @@ require("./020tracking");
 require("./030json");
 require("./031jsonminify");
 require("./040dev");
+require("./044uglify");
 require("./045zip");
 require("./046redundantassets");
 require("./047techspec");

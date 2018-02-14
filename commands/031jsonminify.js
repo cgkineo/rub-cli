@@ -4,32 +4,30 @@ commands.create({
 
   index: 31,
   command: [
-    "minify",
-    "uglify"
+    "minify"
   ],
   switch: "M",
   description: "minify json",
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
     || commands.options(['help'])));
   },
 
   shouldQueue() {
     return commands.has(['minify']) || commands.switches(['M'])
-    || commands.options(['minify']) || commands.has(['uglify'])
-    || commands.switches(['U']) || commands.options(['uglify']);
+    || commands.options(['minify'])
   },
 
   queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
 
-      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) 
+      var isDevelopment = commands.has(['dev']) || commands.switches(['d'])
       || commands.options(['dev']);
-      var force = commands.switches(['f','F']) 
+      var force = commands.switches(['f','F'])
       || commands.options(['force', 'forceall']) || false;
 
       tasks.add(this, {
@@ -44,7 +42,7 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    var isVerbose = commands.has("verbose") || commands.switches(['v'])
     || commands.options(['verbose']);
     var isBuilding = commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
@@ -66,7 +64,7 @@ commands.create({
     log(`${namePrefix}Minifying...`);
 
     return fsg.stats({
-      globs: [ 
+      globs: [
         "*."+jsonext,
         "**/*."+jsonext
       ],
@@ -96,14 +94,14 @@ commands.create({
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has(['prettify']) || commands.switches(['P']) 
-    || commands.options(['prettify']) || commands.has(['dev']) 
+    return commands.has(['prettify']) || commands.switches(['P'])
+    || commands.options(['prettify']) || commands.has(['dev'])
     || commands.switches(['d']) || commands.options(['dev']);
   },
 
@@ -111,9 +109,9 @@ commands.create({
 
     return new Promise((resolve, reject) => {
 
-      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) 
+      var isDevelopment = commands.has(['dev']) || commands.switches(['d'])
       || commands.options(['dev']);
-      var force = commands.switches(['f','F']) 
+      var force = commands.switches(['f','F'])
       || commands.options(['force', 'forceall']) || false;
 
       tasks.add(this, {
@@ -128,7 +126,7 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    var isVerbose = commands.has("verbose") || commands.switches(['v'])
     || commands.options(['verbose']);
     var isBuilding = commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
@@ -150,7 +148,7 @@ commands.create({
     log(`${namePrefix}Prettifying...`);
 
     return fsg.stats({
-      globs: [ 
+      globs: [
         "*."+jsonext,
         "**/*."+jsonext
       ],
