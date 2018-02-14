@@ -77,6 +77,7 @@ Adapt Buildkit (rub-cli)
     -M, minify           minify json
     -P, prettify         prettify json
     -d, dev              development build (with sourcemaps, no uglify)
+    -U, uglify           uglify js
     -z, zip              zip output folders
     -r, redundantassets  check for redundant assets
     -t, techspec         check assets against techspec
