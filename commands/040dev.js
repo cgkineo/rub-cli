@@ -9,8 +9,8 @@ commands.create({
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   }
 
@@ -25,8 +25,8 @@ commands.create({
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   }
 
@@ -38,14 +38,14 @@ commands.create({
   name: "compiler",
 
   config() {
-    if (commands.has() || commands.switches(['h']) 
+    if (commands.has() || commands.switches(['h'])
       || commands.options(['help'])) return;
     commands.add("build");
   },
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   },
 
@@ -59,14 +59,14 @@ commands.create({
   queue(isFromWatch) {
 
     return new Promise((resolve, reject) => {
-      
+
       if (commands.has(['dev']) || commands.switches(['d'])) {
         commands.set("switch", "w");
       }
 
-      var isDevelopment = commands.has(['dev']) 
+      var isDevelopment = commands.has(['dev'])
       || commands.switches(['d']) || commands.options(['dev']);
-      var force = commands.switches(['f','F']) 
+      var force = commands.switches(['f','F'])
       || commands.options(['force', 'forceall']) || false;
 
       if (isDevelopment) {
@@ -82,7 +82,7 @@ commands.create({
           isDevelopment
         });
       }
-      
+
       tasks.add(this, {
         force,
         isDevelopment,
@@ -97,7 +97,7 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") 
+    var isVerbose = commands.has("verbose")
     || commands.switches(['v']) || commands.options(['verbose']);
 
     var gruntOpts = {};
@@ -150,12 +150,12 @@ commands.create({
       gruntTasks.push('scripts:adaptpostbuild');
     }
 
-    // if (adapt.hasMinify && !options.isDevelopment) {
-    //   if (isVerbose) {
-    //     log(`${namePrefix}Minifying...`);
-    //   }
-    //   gruntTasks.push('minify');
-    // }
+    if (adapt.hasMinify && !options.isDevelopment) {
+      if (isVerbose) {
+        log(`${namePrefix}Minifying...`);
+      }
+      gruntTasks.push('minify');
+    }
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
     .then(grunt.output).catch(grunt.error);
