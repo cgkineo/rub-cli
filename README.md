@@ -48,7 +48,7 @@ The new variable declaration mechanism follows the Adapt open source style.
 You can only use variables from config and course.
 
 #### Tracking Ids
-These three commands (``tracking:remove``, ``tracking:insert`` and ``tracking:remove``) will change the ``src/course`` if you’re using the Adapt Learning structure of the ``builds/moduleName/course/`` files otherwise.
+These three commands (``tracking:remove``, ``tracking:insert`` and ``tracking:remove``) will change the ``src/course`` if you’re using the Adapt Learning structure, or the ``builds/moduleName/course/`` files otherwise.
 
 ### Execute
 
