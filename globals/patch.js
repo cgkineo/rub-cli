@@ -39,6 +39,16 @@ class Patch {
       }));
     }
 
+     if (semver.satisfies(adapt.version, "=3.0.0")) {
+      notice("=3.0.0   fixes 2006");
+      promises.push(fsg.copy({
+        globs: "**",
+        location: path.join(rootPath, "patch/3_0_0grunt"),
+        to: pwd,
+        force: true
+      }));
+    }
+
     // promises.push(this.getRequires().then((requires)=>{
     //   var mapped = {};
     //   requires.forEach((item)=>{ mapped[item] = true; })
