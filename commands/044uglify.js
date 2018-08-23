@@ -65,8 +65,6 @@ commands.create({
 
     var gruntTasks = [];
 
-    console.log("Seeking minification");
-
     if (adapt.hasMinify) {
       log(`${namePrefix}Uglifying...`);
       gruntTasks.push('minify');
