@@ -1,6 +1,6 @@
 'use strict';
 
-function download(locationUrl, callback, isText) {
+function download(locationUrl, callback, errorCB) {
   //download any file to a location
   var https = require("https");
   var url = require("url");
@@ -26,7 +26,7 @@ function download(locationUrl, callback, isText) {
     });
   });
   req.on("error", function(e) {
-    console.log(e);
+    errorCB(e);
   });
   req.end();
 }
@@ -83,9 +83,12 @@ commands.create({
         warn("Latest:", data.version);
         warn("Please run: npm install -g rub-cli");
         resolve();
+      }, (err)=>{
+        notice("Could not update.");
+        resolve();
       });
 
-      
+
 
     });
 

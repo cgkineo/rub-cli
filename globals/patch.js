@@ -6,6 +6,10 @@ class Patch {
 
     var promises = [];
 
+    if (adapt.rubpatchversion === rub.version && process.argv.indexOf("patch") === -1) {
+      return Promise.all(promises);
+    }
+
     if (semver.satisfies(adapt.version, ">=2.0.13")) {
       //patch all rub files with this folder
       notice(">=2.0.13  reroute grunt");
@@ -16,10 +20,6 @@ class Patch {
         to: pwd,
         force: true
       }));
-    }
-
-    if (adapt.rubpatchversion === rub.version && process.argv.indexOf("patch") === -1) {
-      return Promise.all(promises);
     }
 
     notice("Patching...");
