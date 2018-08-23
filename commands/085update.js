@@ -26,7 +26,7 @@ function download(locationUrl, callback, errorCB) {
     });
   });
   req.on("error", function(e) {
-    callback(e);
+    errorCB(e);
   });
   req.end();
 }
