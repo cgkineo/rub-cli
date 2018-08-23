@@ -18,7 +18,9 @@ commands.create({
 
   shouldQueue() {
     return commands.has(['uglify'])
-    || commands.switches(['U']) || commands.options(['uglify']);
+    || commands.switches(['U']) || commands.options(['uglify'])
+    || commands.has(['build']) || commands.switches(['b']) ||
+    commands.options(['build']);
   },
 
   queue(isFromWatch) {
@@ -62,6 +64,8 @@ commands.create({
     var jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || "json";
 
     var gruntTasks = [];
+
+    console.log("Seeking minification");
 
     if (adapt.hasMinify) {
       log(`${namePrefix}Uglifying...`);
