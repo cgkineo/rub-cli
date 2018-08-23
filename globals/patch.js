@@ -29,7 +29,7 @@ class Patch {
       process.exit();
     }
 
-    if (semver.satisfies(adapt.version, "<=2.2.1 && <3.0.0")) {
+    if (semver.satisfies(adapt.version, "<3.0.0")) {
       notice("<=3.0.0-alpha  fixes 1774,1775,1776,1777,1781,1782,1783,1784");
       promises.push(fsg.copy({
         globs: "**",
