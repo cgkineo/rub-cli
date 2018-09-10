@@ -19,8 +19,9 @@ commands.create({
   shouldQueue() {
     return commands.has(['uglify'])
     || commands.switches(['U']) || commands.options(['uglify'])
-    || commands.has(['build']) || commands.switches(['b']) ||
-    commands.options(['build']);
+    || ((commands.has(['build']) || commands.switches(['b']) ||
+    commands.options(['build'])) && !(commands.has(['dev']) || commands.switches(['d']) ||
+    commands.options(['dev'])));
   },
 
   queue(isFromWatch) {
