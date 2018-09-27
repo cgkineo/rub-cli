@@ -14,6 +14,8 @@ Please make sure you leave the following files and folders in your development f
 
 Then run ``npm install -g rub-cli grunt-cli``  
 
+**N.B. it is critical to install ``grunt-cli`` otherwise the commands may fail silently.**
+
 ### Retrofitting
 1. Make sure your Adapt framework is >=2.0.13
 2. Remember your package.json version number
