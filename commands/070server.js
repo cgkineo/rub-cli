@@ -88,8 +88,8 @@ commands.create({
   },
 
   listening() {
-    notice("Opening http://127.0.0.1:"+this.port+"...")
-    open('http://127.0.0.1:'+this.port);
+    notice("Opening http://localhost:"+this.port+"...")
+    open('http://localhost:'+this.port);
   },
 
   urlStat(URL) {
