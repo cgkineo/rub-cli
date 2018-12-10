@@ -73,7 +73,13 @@ commands.create({
 
       stats.each((stat, next, resolve)=>{
         if (!stat) return resolve();
-        var minified = JSON.parse(fs.readFileSync(stat.location).toString());
+        try {
+          var minified = JSON.parse(fs.readFileSync(stat.location).toString());
+        } catch (err) {
+          console.log(stat.location, err);
+          next();
+          return;
+        }
         var unminified = JSON.stringify(minified);
         fs.writeFileSync(stat.location, unminified);
         next();
@@ -157,7 +163,13 @@ commands.create({
 
       stats.each((stat, next, resolve)=>{
         if (!stat) return resolve();
-        var minified = JSON.parse(fs.readFileSync(stat.location).toString());
+        try {
+          var minified = JSON.parse(fs.readFileSync(stat.location).toString());
+        } catch (err) {
+          console.log(stat.location, err);
+          next();
+          return;
+        }
         var unminified = JSON.stringify(minified, null, 4);
         fs.writeFileSync(stat.location, unminified);
         next();

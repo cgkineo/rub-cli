@@ -5,14 +5,9 @@ class Patch {
   static initialize() {
 
     var promises = [];
-
-    if (adapt.rubpatchversion === rub.version && process.argv.indexOf("patch") === -1) {
-      return Promise.all(promises);
-    }
-
     if (semver.satisfies(adapt.version, ">=2.0.13")) {
       //patch all rub files with this folder
-      notice(">=2.0.13  reroute grunt");
+      //notice(">=2.0.13  reroute grunt");
       //always patch node_modules due to svn transport of package.json
       promises.push(fsg.copy({
         globs: "**",
@@ -20,6 +15,10 @@ class Patch {
         to: pwd,
         force: true
       }));
+    }
+
+    if (adapt.rubpatchversion === rub.version && process.argv.indexOf("patch") === -1) {
+      return Promise.all(promises);
     }
 
     notice("Patching...");
