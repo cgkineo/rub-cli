@@ -45,14 +45,40 @@ module.exports = function(grunt) {
 
                 if (!currentPluginName || !currentSchemaJson.globals) return;
 
-                //iterate through schema globals attributes
-                _.each(currentSchemaJson.globals, function(item, attributeName) {
-                    //translate schema attribute into globals object
-                    var pluginTypeDefaults = globalsObject['_'+ pluginType] = globalsObject['_'+ pluginType] || {};
-                    var pluginDefaults =  pluginTypeDefaults['_' + currentPluginName] = pluginTypeDefaults['_' + currentPluginName] || {};
+                var pluginTypeDefaults = globalsObject['_'+ pluginType] = globalsObject['_'+ pluginType] || {};
+                var pluginDefaults =  pluginTypeDefaults['_' + currentPluginName] = pluginTypeDefaults['_' + currentPluginName] || {};
 
-                    pluginDefaults[attributeName] = item['default'];
-                });
+                copyToDefaults(currentSchemaJson.globals, pluginDefaults);
+
+                function copyToDefaults(obj, target) {
+                    _.each(obj, function(val, key) {
+                        if (val['type'] == 'array') {
+                            
+                            if (val.hasOwnProperty('default')) {
+                                target[key] = val['default'];
+                            }
+
+                            else if (val['items'] && val['items']['type'] == 'object') {
+                                target[key] = [{}];
+                                copyToDefaults(val['items']['properties'], target[key][0]);
+                            }
+
+                            else {
+                                console.log('new array case for', key);
+                            }
+
+                        } else if (val['type'] == 'object') {
+
+                            target[key] = {};
+                            copyToDefaults(val['properties'], target[key]);
+
+                        } else {
+
+                            target[key] = val['default'];
+
+                        }
+                    });
+                }
             });
         });
 
