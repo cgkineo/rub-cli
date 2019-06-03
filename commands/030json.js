@@ -67,16 +67,24 @@ commands.create({
       log(`${namePrefix}Processing assets, json, required and libraries...`);
     }
 
-    var gruntTasks = [
-      'check-json'
-    ];
+    var gruntTasks = [];
+
+    gruntTasks.push('check-json');
+
+    if (semver.satisfies(adapt.version, '>3.2.2')) {
+      // https://github.com/adaptlearning/adapt_framework/issues/2248
+      gruntTasks.push('copy');
+    }
 
     if (semver.satisfies(adapt.version, '>2.2.1')) {
       // schema defaults acts upon the source
       gruntTasks.push("schema-defaults");
     }
 
-    gruntTasks.push('copy');
+    if (semver.satisfies(adapt.version, '<=3.2.2')) {
+      // https://github.com/adaptlearning/adapt_framework/issues/2248
+      gruntTasks.push('copy');
+    }
 
     if (semver.satisfies(adapt.version, '<=2.2.1')) {
       // schema defaults acts upon the destination
