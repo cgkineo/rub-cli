@@ -1,7 +1,7 @@
 {
   "name": "rub-cli",
   "commonName": "rub-cli",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run 'npm install -g rub-cli'",
@@ -11,6 +11,7 @@
   "versionURL": "https://raw.githubusercontent.com/cgkineo/rub-cli/master/package.json",
   "dependencies": {
     "chalk": "^2.1.0",
+    "fs-extra": "^8.0.1",
     "fs-glob": "^1.1.14",
     "image-size-big-max-buffer": "^0.3.5",
     "node-native-zip-compression": "^1.0.1",
