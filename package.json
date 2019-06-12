@@ -1,11 +1,10 @@
 {
   "name": "rub-cli",
   "commonName": "rub-cli",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run 'npm install -g rub-cli'",
-  "scripts": {},
   "author": "Oliver Foster, Kineo",
   "license": "GPL-3.0",
   "repository": "https://github.com/cgkineo/rub-cli",
@@ -22,6 +21,9 @@
     "underscore": "^1.8.3",
     "underscore-deep-extend": "^1.1.5",
     "util-ffprobe": "0.0.5"
+  },
+  "scripts": {
+    "install": "node install.js"
   },
   "bin": {
     "rub": "./bin/rub"

@@ -9,13 +9,13 @@ commands.create({
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has('redundantassets') || commands.switches(['r']) 
+    return commands.has('redundantassets') || commands.switches(['r'])
     || commands.options(['redundantassets']);
   },
 
@@ -27,10 +27,10 @@ commands.create({
     });
 
   },
-  
+
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    var isVerbose = commands.has("verbose") || commands.switches(['v'])
     || commands.options(['verbose']);
     var namePrefix = name ? name+": " : "";
     if (isVerbose) {
@@ -40,7 +40,7 @@ commands.create({
     }
 
     var jsonAssetRegExp = /((\\\"|\"|'){1}([^\"']*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(\\\"|\"|'){1})/g;
-    var cssAssetRegExp = /((url\(){1}([^\)]*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(\)){1})/g;
+    var cssAssetRegExp = /((url\(){1}([^\)]*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(["']){0,1}(\)){1})/g;
 
      var jsonAssetListPaths = [];
     var cssAssetListPaths = [];
@@ -113,9 +113,10 @@ commands.create({
 
       return fsg.stats({
         globs: [
+          "adapt/css/*.css",
           "*.css"
         ],
-        location: path.join(paths.dest.location, "adapt/css")
+        location: paths.dest.location
       })
 
     }).then((csses)=>{
@@ -160,7 +161,7 @@ commands.create({
             match = match.substr(0, match.length-1);
           }
           if (!match) return;
-          cssAssetListPaths.push(match);
+          cssAssetListPaths.push(path.join(css.dir, match));
         });
 
       });
@@ -175,8 +176,7 @@ commands.create({
           //log(`${namePrefix}Asset external ` + cssAssetListPath);
           return;
         }
-        var filePath = fsg.posix(path.join(paths.dest.location, "adapt/css", cssAssetListPath));
-        fileAssetListPaths.push(filePath);
+        var filePath = fsg.posix(cssAssetListPath);
         if (fs.existsSync( filePath )) {
           fileAssetListPaths.push(filePath);
           //log(`${namePrefix}Asset missing ` + cssAssetListPath);
@@ -198,11 +198,11 @@ commands.create({
       });
 
     }).then((assets)=>{
-    
+
       var storedAssets = assets.pluck('location');
       var difference = _.difference(storedAssets, fileAssetListPaths);
-      var redundants = difference.map((item)=>{ 
-        return fsg.rel(item, paths.dest.location); 
+      var redundants = difference.map((item)=>{
+        return fsg.rel(item, paths.dest.location);
       });
 
       redundants.forEach((redundant)=>{
