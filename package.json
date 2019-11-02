@@ -15,7 +15,7 @@
     "fs-glob": "^1.1.14",
     "image-size-big-max-buffer": "^0.3.5",
     "node-native-zip-compression": "^1.0.1",
-    "open": "0.0.5",
+    "open": "7.0.0",
     "semver": "^5.4.1",
     "serve-index": "^1.6.3",
     "serve-static": "^1.10.0",
