@@ -18,7 +18,7 @@ class Grunt {
       }
     }
     var command = "grunt "+tasks.join(" ")+opts;
-    
+
     return new Promise((resolve, reject)=>{
 
       let exec = require('child_process').exec;
@@ -69,9 +69,10 @@ class Grunt {
     output = output.replace(/>> .* KiB - .*% = .* KiB\n/g,"");
     output = output.replace(/>> [0-9]* file.* created.*\n/g,"");
 
-    output = output.replace(/Aborted due to warnings\.\n/g, ""); 
+    output = output.replace(/Aborted due to warnings\.\n/g, "");
     output = output.replace(/Use --force to continue\.\n/g, "");
     output = output.replace(/No newer files to process\./g, "");
+    output = output.replace(/>> /g, "");
     while (output.indexOf("\n\n") > -1) {
       output = output.replace(/\n\n/g, "\n");
     }

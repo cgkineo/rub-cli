@@ -9,13 +9,13 @@ commands.create({
   exclusive: false,
 
   shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h'])
       || commands.options(['help'])));
   },
 
   shouldQueue() {
-    return commands.has(['json']) || commands.switches(['j']) 
+    return commands.has(['json']) || commands.switches(['j'])
     || commands.options(['json']);
   },
 
@@ -23,9 +23,9 @@ commands.create({
 
     return new Promise((resolve, reject) => {
 
-      var isDevelopment = commands.has(['dev']) || commands.switches(['d']) 
+      var isDevelopment = commands.has(['dev']) || commands.switches(['d'])
       || commands.options(['dev']);
-      var force = commands.switches(['f','F']) 
+      var force = commands.switches(['f','F'])
       || commands.options(['force', 'forceall']) || false;
 
       tasks.add(this, {
@@ -40,7 +40,7 @@ commands.create({
 
   perform(name, options, paths) {
 
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
+    var isVerbose = commands.has("verbose") || commands.switches(['v'])
     || commands.options(['verbose']);
     var isBuilding = commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
@@ -91,8 +91,13 @@ commands.create({
       gruntTasks.push("schema-defaults");
     }
 
+
+    if (semver.satisfies(adapt.version, '<5')) {
+      // schema defaults acts upon the destination
+      gruntTasks.push('create-json-config');
+    }
+
     gruntTasks.push.apply(gruntTasks, [
-      'create-json-config',
       'tracking-insert',
       'replace'
     ]);
