@@ -138,24 +138,30 @@ commands.create({
     }
 
     var newerPrefix = hasNewerPrefix  ? "newer:" : "";
+
     var gruntTasks = [
       `${newerPrefix}handlebars`,
       `${newerPrefix}javascript${typePostfix}`,
       `${newerPrefix}less${typePostfix}`,
-      `build-config`
     ];
+
+    if (semver.satisfies(adapt.version, '>=5.2')) {
+      var babelTaskPath = path.join(paths.src.dir, "grunt/config/babel.js");
+      var hasBabel = fs.existsSync(babelTaskPath);
+      if (hasBabel) {
+        gruntTasks.push(...[
+          `babel`,
+          `clean:temp`
+        ]);
+      }
+    }
+
+    gruntTasks.push(`build-config`);
 
     if (adapt.hasScript) {
       log(`${namePrefix}Running plugin scripts...`);
       gruntTasks.push('scripts:adaptpostbuild');
     }
-
-    // if (adapt.hasMinify && !options.isDevelopment) {
-    //   if (isVerbose) {
-    //     log(`${namePrefix}Minifying...`);
-    //   }
-    //   gruntTasks.push('minify');
-    // }
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
     .then(grunt.output).catch(grunt.error);
