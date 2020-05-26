@@ -97,6 +97,10 @@ commands.create({
       gruntTasks.push('create-json-config');
     }
 
+    if (semver.satisfies(adapt.version, '>=5.5')) {
+      gruntTasks.push("language-data-manifests");
+    }
+
     gruntTasks.push.apply(gruntTasks, [
       'tracking-insert',
       'replace'

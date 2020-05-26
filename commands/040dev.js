@@ -145,7 +145,7 @@ commands.create({
       `${newerPrefix}less${typePostfix}`,
     ];
 
-    if (semver.satisfies(adapt.version, '>=5.2')) {
+    if (semver.satisfies(adapt.version, '>=5.2 <=5.4')) {
       var babelTaskPath = path.join(paths.src.dir, "grunt/config/babel.js");
       var hasBabel = fs.existsSync(babelTaskPath);
       if (hasBabel) {
@@ -156,7 +156,16 @@ commands.create({
       }
     }
 
-    gruntTasks.push(`build-config`);
+    if (semver.satisfies(adapt.version, '>=5.5')) {
+      var babelTaskPath = path.join(paths.src.dir, "grunt/config/babel.js");
+      var hasBabel = fs.existsSync(babelTaskPath);
+      if (hasBabel) {
+        gruntTasks.push(...[
+          `babel${typePostfix}`,
+          `clean:temp`
+        ]);
+      }
+    }
 
     if (adapt.hasScript) {
       log(`${namePrefix}Running plugin scripts...`);
