@@ -167,6 +167,8 @@ commands.create({
       }
     }
 
+    gruntTasks.push(`build-config`);
+
     if (adapt.hasScript) {
       log(`${namePrefix}Running plugin scripts...`);
       gruntTasks.push('scripts:adaptpostbuild');
