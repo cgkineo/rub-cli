@@ -8,7 +8,8 @@ var isLegacy = fs.existsSync(path.join(process.cwd(), "./buildkit"))
 var pkgJSON = JSON.parse(fs.readFileSync(path.join(rootPath, "package.json")));
 var output = {
     package: pkgJSON,
-    isLegacy
+    isLegacy,
+    semverOptions: { includePrerelease: true }
 };
 for (var k in pkgJSON) output[k] = pkgJSON[k];
 

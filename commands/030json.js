@@ -71,33 +71,33 @@ commands.create({
 
     gruntTasks.push('check-json');
 
-    if (semver.satisfies(adapt.version, '>3.2.2')) {
+    if (semver.satisfies(adapt.version, '>3.2.2', rub.semverOptions)) {
       // https://github.com/adaptlearning/adapt_framework/issues/2248
       gruntTasks.push('copy');
     }
 
-    if (semver.satisfies(adapt.version, '>2.2.1')) {
+    if (semver.satisfies(adapt.version, '>2.2.1', rub.semverOptions)) {
       // schema defaults acts upon the source
       gruntTasks.push("schema-defaults");
     }
 
-    if (semver.satisfies(adapt.version, '<=3.2.2')) {
+    if (semver.satisfies(adapt.version, '<=3.2.2', rub.semverOptions)) {
       // https://github.com/adaptlearning/adapt_framework/issues/2248
       gruntTasks.push('copy');
     }
 
-    if (semver.satisfies(adapt.version, '<=2.2.1')) {
+    if (semver.satisfies(adapt.version, '<=2.2.1', rub.semverOptions)) {
       // schema defaults acts upon the destination
       gruntTasks.push("schema-defaults");
     }
 
 
-    if (semver.satisfies(adapt.version, '<5')) {
+    if (semver.satisfies(adapt.version, '<5', rub.semverOptions)) {
       // schema defaults acts upon the destination
       gruntTasks.push('create-json-config');
     }
 
-    if (semver.satisfies(adapt.version, '>=5.5')) {
+    if (semver.satisfies(adapt.version, '>=5.5', rub.semverOptions)) {
       gruntTasks.push("language-data-manifests");
     }
 
