@@ -1,153 +1,143 @@
-'use strict';
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log } = require('../globals/logger')
+const grunt = require('grunt')
 
 commands.create({
 
   index: 20,
   command: [
-    "tracking:insert",
-    "tracking-insert",
-    "trackinginsert"
+    'tracking:insert',
+    'tracking-insert',
+    'trackinginsert'
   ],
-  description: "add block tracking ids",
+  description: 'add block tracking ids',
   exclusive: false,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has(['tracking:insert']) 
-    || commands.has(['tracking-insert']) 
-    || commands.has(['trackinginsert']) 
-    || commands.options(['trackinginsert']);
+  shouldQueue () {
+    return commands.has(['tracking:insert']) ||
+    commands.has(['tracking-insert']) ||
+    commands.has(['trackinginsert']) ||
+    commands.options(['trackinginsert'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Inserting tracking ids...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Inserting tracking ids...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var gruntOpts = {
+  perform (name, options, paths) {
+    const gruntOpts = {
       'outputdir': paths.dest.location
-    };
+    }
 
-    var namePrefix = name ? name+": " : "";
-    log(`${namePrefix}Inserting tracking ids...`);
+    const namePrefix = name ? name + ': ' : ''
+    log(`${namePrefix}Inserting tracking ids...`)
 
     return Promise.all([
       grunt.run(namePrefix, [
         'tracking-insert'
       ], gruntOpts).then(grunt.output).catch(grunt.error)
-    ]);
-
+    ])
   }
 
-});
-
+})
 
 commands.create({
 
   index: 21,
   command: [
-    "tracking:remove",
-    "tracking-remove",
-    "trackingremove"
+    'tracking:remove',
+    'tracking-remove',
+    'trackingremove'
   ],
-  description: "remove block tracking ids",
+  description: 'remove block tracking ids',
   exclusive: true,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has(['tracking:remove']) || commands.has(['tracking-remove']) || commands.has(['trackingremove']) || commands.options(['trackingremove']);
+  shouldQueue () {
+    return commands.has(['tracking:remove']) || commands.has(['tracking-remove']) || commands.has(['trackingremove']) || commands.options(['trackingremove'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Removing tracking ids...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Removing tracking ids...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var gruntOpts = {
+  perform (name, options, paths) {
+    const gruntOpts = {
       'outputdir': paths.dest.location
-    };
+    }
 
-    var namePrefix = name ? name+": " : "";
-    log(`${namePrefix}Removing tracking ids...`);
+    const namePrefix = name ? name + ': ' : ''
+    log(`${namePrefix}Removing tracking ids...`)
 
     return Promise.all([
       grunt.run(namePrefix, [
         'tracking-remove'
       ], gruntOpts).then(grunt.output).catch(grunt.error)
-    ]);
-
+    ])
   }
 
-});
+})
 
 commands.create({
 
   index: 22,
   command: [
-    "tracking:reset",
-    "tracking-reset",
-    "trackingreset"
+    'tracking:reset',
+    'tracking-reset',
+    'trackingreset'
   ],
-  description: "reset block tracking ids",
+  description: 'reset block tracking ids',
   exclusive: true,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) || commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has(['tracking:reset']) || commands.has(['tracking-reset'])  || commands.has(['trackingreset']) || commands.options(['trackingreset']);
+  shouldQueue () {
+    return commands.has(['tracking:reset']) || commands.has(['tracking-reset']) || commands.has(['trackingreset']) || commands.options(['trackingreset'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Resetting tracking ids...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Resetting tracking ids...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var gruntOpts = {
+  perform (name, options, paths) {
+    const gruntOpts = {
       'outputdir': paths.dest.location
-    };
+    }
 
-    var namePrefix = name ? name+": " : "";
-    log(`${namePrefix}Resetting tracking ids...`);
+    const namePrefix = name ? name + ': ' : ''
+    log(`${namePrefix}Resetting tracking ids...`)
 
     return Promise.all([
       grunt.run(namePrefix, [
         'tracking-reset'
       ], gruntOpts).then(grunt.output).catch(grunt.error)
-    ]);
-
+    ])
   }
 
-});
+})

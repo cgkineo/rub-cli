@@ -1,217 +1,186 @@
-'use strict';
+const _ = require('lodash')
+const path = require('path')
+const fs = require('fs-extra')
+const { stat, posix } = require('../globals/fs-globs')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const adapt = require('../globals/adapt')
+const { log } = require('../globals/logger')
 
 commands.create({
 
   index: 46,
-  command: "redundantassets",
-  switch: "r",
-  description: "check for redundant assets",
+  command: 'redundantassets',
+  switch: 'r',
+  description: 'check for redundant assets',
   exclusive: false,
 
-  shouldHelp() {
+  shouldHelp () {
     return commands.has(['help', undefined]) ||
-    (commands.has([undefined]) && (commands.switches(['h'])
-      || commands.options(['help'])));
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has('redundantassets') || commands.switches(['r'])
-    || commands.options(['redundantassets']);
+  shouldQueue () {
+    return commands.has('redundantassets') || commands.switches(['r']) ||
+    commands.options(['redundantassets'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      tasks.add(this);
-      resolve();
-    });
-
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var isVerbose = commands.has("verbose") || commands.switches(['v'])
-    || commands.options(['verbose']);
-    var namePrefix = name ? name+": " : "";
+  async perform (name, options, paths) {
+    const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
+    commands.options(['verbose'])
+    const namePrefix = name ? name + ': ' : ''
     if (isVerbose) {
-      log(`${namePrefix}Checking for redundant assets...`);
+      log(`${namePrefix}Checking for redundant assets...`)
     } else {
-      log(`${namePrefix}Checking for redundant assets...`);
+      log(`${namePrefix}Checking for redundant assets...`)
     }
 
-    var jsonAssetRegExp = /((\\\"|\"|'){1}([^\"']*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(\\\"|\"|'){1})/g;
-    var cssAssetRegExp = /((url\(){1}([^\)]*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(["']){0,1}(\)){1})/g;
+    const jsonAssetRegExp = /((\\"|"|'){1}([^"']*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(\\"|"|'){1})/g
+    const cssAssetRegExp = /((url\(){1}([^)]*((\.png|\.gif|\.jpg|\.jpeg|\.mp4|\.ogv|\.mp3|\.ogg|\.pdf|\.svg|\.vtt|\.pdf)+)|.{0})(["']){0,1}(\)){1})/g
 
-     var jsonAssetListPaths = [];
-    var cssAssetListPaths = [];
-    var fileAssetListPaths = [];
+    let jsonAssetListPaths = []
+    let cssAssetListPaths = []
+    let fileAssetListPaths = []
 
-    var jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || "json";
+    const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
 
-    return fsg.stats({
+    const stats = await stat({
       globs: [
-        "course/*."+jsonext,
-        "course/**/*."+jsonext
+        'course/*.' + jsonext,
+        'course/**/*.' + jsonext
       ],
       location: paths.dest.location
-    }).then((jsons)=>{
-
-      jsons.forEach((json)=>{
-
-        // Read each .json file
-        var currentJsonFile = fs.readFileSync(json.location).toString();
-        var matches = currentJsonFile.match(jsonAssetRegExp);
-        matches = _.uniq(matches);
-        if (!matches) return;
-        matches.forEach((match)=>{
-          switch (match.substr(0,2)) {
+    })
+    stats.forEach((json) => {
+      // Read each .json file
+      const currentJsonFile = fs.readFileSync(json.location).toString()
+      let matches = currentJsonFile.match(jsonAssetRegExp)
+      matches = _.uniq(matches)
+      if (!matches) return
+      matches.forEach((match) => {
+        switch (match.substr(0, 2)) {
           case "\\'": case '\\"':
-            match = match.substr(2);
-          }
-          switch (match.substr(match.length-2,2)) {
+            match = match.substr(2)
+        }
+        switch (match.substr(match.length - 2, 2)) {
           case "\\'": case '\\"':
-            match = match.substr(0, match.length-2);
-          }
-          switch (match.substr(0,1)) {
-          case "'": case '"':
-            match = match.substr(1);
-          }
-          switch (match.substr(match.length-1,1)) {
-          case "'": case '"':
-            match = match.substr(0, match.length-1);
-          }
-          if (match == ")" || !match) return;
-
-          jsonAssetListPaths.push(match);
-
-        });
-
-
-      });
-
-      jsonAssetListPaths = _.uniq(jsonAssetListPaths);
-
-    }).then(()=>{
-
-      jsonAssetListPaths.forEach((jsonAssetListPath)=>{
-
-        if (jsonAssetListPath.substr(0,4) === "http") {
-          //log(`${namePrefix}Asset external ` + jsonAssetListPath);
-          return;;
+            match = match.substr(0, match.length - 2)
         }
-
-        var filePath = fsg.posix(path.join(paths.dest.location, jsonAssetListPath));
-        if (!fs.existsSync( filePath )) {
-          //log(`${namePrefix}Asset missing ` + jsonAssetListPath);
-        } else {
-          fileAssetListPaths.push(filePath);
+        switch (match.substr(0, 1)) {
+          case "'": case '"':
+            match = match.substr(1)
         }
+        switch (match.substr(match.length - 1, 1)) {
+          case "'": case '"':
+            match = match.substr(0, match.length - 1)
+        }
+        if (match === ')' || !match) return
 
-      });
-
-    }).then(()=>{
-
-      return fsg.stats({
-        globs: [
-          "adapt/css/*.css",
-          "*.css"
-        ],
-        location: paths.dest.location
+        jsonAssetListPaths.push(match)
       })
+    })
+    jsonAssetListPaths = _.uniq(jsonAssetListPaths)
+    jsonAssetListPaths.forEach((jsonAssetListPath) => {
+      if (jsonAssetListPath.substr(0, 4) === 'http') {
+        // log(`${namePrefix}Asset external ` + jsonAssetListPath);
+        return
+      }
 
-    }).then((csses)=>{
-
-      csses.forEach((css)=>{
-        var cssFile = fs.readFileSync(css.location).toString();
-        var matches = cssFile.match(cssAssetRegExp);
-        matches = _.uniq(matches);
-        if (!matches) return;
-        matches.forEach((match)=>{
-          match = match.trim()
-          switch (match.substr(0,5)) {
-          case "url('": case "url(\"":
-            match = match.substr(5);
-          }
-          switch (match.substr(0,4)) {
-          case "url(":
-            match = match.substr(4);
-          }
-          switch (match.substr(0,2)) {
+      const filePath = posix(path.join(paths.dest.location, jsonAssetListPath))
+      if (!fs.existsSync(filePath)) {
+        // log(`${namePrefix}Asset missing ` + jsonAssetListPath);
+      } else {
+        fileAssetListPaths.push(filePath)
+      }
+    })
+    const csses = await stat({
+      globs: [
+        'adapt/css/*.css',
+        '*.css'
+      ],
+      location: paths.dest.location
+    })
+    csses.forEach((css) => {
+      const cssFile = fs.readFileSync(css.location).toString()
+      let matches = cssFile.match(cssAssetRegExp)
+      matches = _.uniq(matches)
+      if (!matches) return
+      matches.forEach((match) => {
+        match = match.trim()
+        switch (match.substr(0, 5)) {
+          case "url('": case 'url("':
+            match = match.substr(5)
+        }
+        switch (match.substr(0, 4)) {
+          case 'url(':
+            match = match.substr(4)
+        }
+        switch (match.substr(0, 2)) {
           case "\\'": case '\\"':
-            match = match.substr(2);
-          }
-          switch (match.substr(match.length-2,2)) {
+            match = match.substr(2)
+        }
+        switch (match.substr(match.length - 2, 2)) {
           case "\\'": case '\\"':
-            match = match.substr(0, match.length-2);
-          }
-          switch (match.substr(match.length-2,2)) {
+            match = match.substr(0, match.length - 2)
+        }
+        switch (match.substr(match.length - 2, 2)) {
           case "')": case '")':
-            match = match.substr(0, match.length-2);
-          }
-          switch (match.substr(0,1)) {
-          case "'": case '"':
-            match = match.substr(1);
-          }
-          switch (match.substr(match.length-1,1)) {
-          case "'": case '"':
-            match = match.substr(0, match.length-1);
-          }
-          switch (match.substr(match.length-1,1)) {
-          case ")":
-            match = match.substr(0, match.length-1);
-          }
-          if (!match) return;
-          cssAssetListPaths.push(path.join(css.dir, match));
-        });
-
-      });
-
-      cssAssetListPaths = _.uniq(cssAssetListPaths);
-
-    }).then(()=>{
-
-      cssAssetListPaths.forEach((cssAssetListPath)=>{
-
-        if (cssAssetListPath.substr(0,4) === "http") {
-          //log(`${namePrefix}Asset external ` + cssAssetListPath);
-          return;
+            match = match.substr(0, match.length - 2)
         }
-        var filePath = fsg.posix(cssAssetListPath);
-        if (fs.existsSync( filePath )) {
-          fileAssetListPaths.push(filePath);
-          //log(`${namePrefix}Asset missing ` + cssAssetListPath);
+        switch (match.substr(0, 1)) {
+          case "'": case '"':
+            match = match.substr(1)
         }
-
-      });
-
-    }).then(()=>{
-
-      return fsg.stats({
-        globs: [
-          "!adapt/css/assets/**",
-          "assets/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)",
-          "assets/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)",
-          "course/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)",
-          "course/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)"
-        ],
-        location: paths.dest.location
-      });
-
-    }).then((assets)=>{
-
-      var storedAssets = assets.pluck('location');
-      var difference = _.difference(storedAssets, fileAssetListPaths);
-      var redundants = difference.map((item)=>{
-        return fsg.rel(item, paths.dest.location);
-      });
-
-      redundants.forEach((redundant)=>{
-        log(`${namePrefix}Asset redundant: ` + redundant);
-      });
-
-
-    });
-
+        switch (match.substr(match.length - 1, 1)) {
+          case "'": case '"':
+            match = match.substr(0, match.length - 1)
+        }
+        switch (match.substr(match.length - 1, 1)) {
+          case ')':
+            match = match.substr(0, match.length - 1)
+        }
+        if (!match) return
+        cssAssetListPaths.push(path.join(css.dir, match))
+      })
+    })
+    cssAssetListPaths = _.uniq(cssAssetListPaths)
+    cssAssetListPaths.forEach((cssAssetListPath) => {
+      if (cssAssetListPath.substr(0, 4) === 'http') {
+        // log(`${namePrefix}Asset external ` + cssAssetListPath);
+        return
+      }
+      const filePath = posix(cssAssetListPath)
+      if (fs.existsSync(filePath)) {
+        fileAssetListPaths.push(filePath)
+        // log(`${namePrefix}Asset missing ` + cssAssetListPath);
+      }
+    })
+    const assets = await stat({
+      globs: [
+        '!adapt/css/assets/**',
+        'assets/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
+        'assets/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
+        'course/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
+        'course/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)'
+      ],
+      location: paths.dest.location
+    })
+    const storedAssets = assets.map(asset => asset.location)
+    const difference = _.difference(storedAssets, fileAssetListPaths)
+    const redundants = difference.map((item) => {
+      return path.relative(item, paths.dest.location)
+    })
+    redundants.forEach((redundant) => {
+      log(`${namePrefix}Asset redundant: ` + redundant)
+    })
   }
 
-});
+})

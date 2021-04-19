@@ -1,65 +1,64 @@
-'use strict';
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log } = require('../globals/logger')
+const { remove } = require('../globals/fs-globs')
 
 commands.create({
 
   index: 15,
-  command: "clean",
-  switch: "c",
-  description: "clean output folder",
+  command: 'clean',
+  switch: 'c',
+  description: 'clean output folder',
   exclusive: false,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has('clean') || commands.switches(['c', 'F']) 
-    || commands.options(['clean', 'forceall']);
+  shouldQueue () {
+    return commands.has('clean') || commands.switches(['c', 'F']) ||
+    commands.options(['clean', 'forceall'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Cleaning output folder...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Cleaning output folder...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var isBuilding = commands.has(['dev']) ||
+  perform (name, options, paths) {
+    const isBuilding = commands.has(['dev']) ||
     commands.switches(['d']) || commands.options(['dev']) ||
     commands.has(['build']) || commands.switches(['b']) ||
-    commands.options(['build']);
+    commands.options(['build'])
 
-    var isJSON = commands.has(['json']) ||
+    const isJSON = commands.has(['json']) ||
     commands.switches(['j']) ||
-    commands.options(['json']);
+    commands.options(['json'])
 
-    if (isJSON && !isBuilding) return;
+    if (isJSON && !isBuilding) return
 
-    var namePrefix = name ? name+": " : "";
-    log(`${namePrefix}Cleaning up...`);
+    const namePrefix = name ? name + ': ' : ''
+    log(`${namePrefix}Cleaning up...`)
 
-    var globs;
+    let globs
     if (paths.isServerBuild) {
       globs = [
-        "**",
-        "!/course/"
-      ];
+        '**',
+        '!/course/'
+      ]
     } else {
-      globs = ["**"];
+      globs = ['**']
     }
 
-    return fsg.delete({
+    return remove({
       globs: globs,
       location: paths.dest.location
-    });
-
+    })
   }
 
-});
+})

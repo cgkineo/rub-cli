@@ -1,142 +1,96 @@
-'use strict';
-
-global.commands = require("./commands");
+const spawn = require('child_process').spawn
+const commands = require('./commands')
+const path = require('path')
+const fs = require('fs-extra')
+const adapt = require('./adapt')
+const rub = require('./rub')
+const rootPath = require('../rootPath')
 
 class Globals {
-
-  static initialize(pwd, rootPath) {
-
-    return new Promise((resolve, reject)=>{
-
-      global.globals = Globals;
-      global.fs = require("fs");
-      global.path = require("path");
-      global.rootPath = rootPath;
-      global.pwd = pwd;
-      global.rub = require("./rub");
-      global.adapt = require("./adapt");
-      global.patch = require("./patch");
-
+  static initialize () {
+    return new Promise((resolve, reject) => {
       if (!adapt) {
-        return reject("Not in an Adapt folder");
+        return reject(new Error('Not in an Adapt folder'))
       }
 
       if (!adapt.hasGruntFolder) {
-        return reject("Open source `grunt` folder expected. Rub is now built ontop of grunt.");
+        return reject(new Error('Open source `grunt` folder expected. Rub is now built ontop of grunt.'))
       }
 
       if (rub.isLegacy) {
-        return reject("Legacy rub is installed. Please use './rub' to run the legacy version");
+        return reject(new Error("Legacy rub is installed. Please use './rub' to run the legacy version"))
       }
-      
-      console.log("");
-      let hasRunNpm = false;
 
-      function checkAdaptNodeModules() {
+      console.log('')
+      let hasRunNpm = false
 
-        if (fs.existsSync(path.join(pwd, "node_modules" ))) return checkRubNodeModules();
+      function checkAdaptNodeModules () {
+        if (fs.existsSync(path.join(process.cwd(), 'node_modules'))) return checkRubNodeModules()
 
-        console.log("Running 'npm install' in your development folder...");
-        hasRunNpm = true;
+        console.log("Running 'npm install' in your development folder...")
+        hasRunNpm = true
 
-        let spawn = require('child_process').spawn;
-        let child = spawn((/^win/.test(process.platform) ? 'npm.cmd' : 'npm'), ['install'], { 
-          cwd: pwd
-        });
+        let child = spawn((/^win/.test(process.platform) ? 'npm.cmd' : 'npm'), ['install'], {
+          cwd: process.cwd()
+        })
 
-        child.stdout.pipe(process.stdout);
-        child.stderr.pipe(process.stderr);
+        child.stdout.pipe(process.stdout)
+        child.stderr.pipe(process.stderr)
 
-        child.on("error", function(error) {
-          console.error("ERROR: npm install failed.");
-          console.log(error);
-          reject(error);
-        });
+        child.on('error', function (error) {
+          console.error('ERROR: npm install failed.')
+          console.log(error)
+          reject(error)
+        })
 
-        child.on("exit", function(error) {
+        child.on('exit', function (error) {
           if (error && error.signal) {
-            console.error("ERROR: npm install failed.");
-            //console.log(error);
-            reject(error);
-            return;
+            console.error('ERROR: npm install failed.')
+            reject(error)
+            return
           }
-          checkRubNodeModules();
-        });
+          checkRubNodeModules()
+        })
         if (commands.switches(['v'])) {
-          child.stdout.pipe(process.stdout);
-          child.stderr.pipe(process.stderr);
+          child.stdout.pipe(process.stdout)
+          child.stderr.pipe(process.stderr)
         }
-
       }
 
-      function checkRubNodeModules() {
+      function checkRubNodeModules () {
+        if (fs.existsSync(path.join(rootPath, 'node_modules'))) return load()
 
-        if (fs.existsSync(path.join(rootPath, "node_modules" ))) return load();
+        console.log("Running 'npm install' in your buildkit folder...")
+        hasRunNpm = true
 
-        console.log("Running 'npm install' in your buildkit folder...");
-        hasRunNpm = true;
-
-        let exec = require('child_process').exec;
-        let child = exec('npm install', { 
+        let exec = require('child_process').exec
+        let child = exec('npm install', {
           cwd: path.join(rootPath)
-        }, function(error) {
+        }, function (error) {
           if (error && error.signal) {
-            console.error("ERROR: npm install failed.");
+            console.error('ERROR: npm install failed.')
             // console.log(error);
-            reject(error);
-            return;
+            reject(error)
+            return
           }
-          load();
-        });
+          load()
+        })
         if (commands.switches(['v'])) {
-          child.stdout.pipe(process.stdout);
-          child.stderr.pipe(process.stderr);
+          child.stdout.pipe(process.stdout)
+          child.stderr.pipe(process.stderr)
         }
-
       }
 
-      function load() {
-
-        if (hasRunNpm) console.log("");
-
-        try {
-          global._ = (require("underscore").mixin({deepExtend: require("underscore-deep-extend")(require("underscore"))}),require("underscore"));
-          global.fsg = require("fs-glob");
-          global.url = require("url");
-          global.os = require("os");
-          global.open = require("open");
-          global.zipLibrary = require("node-native-zip-compression");
-          global.imagesize = require("image-size-big-max-buffer");
-          global.semver = require("semver");
-          global.ffprobe = require("./ffprobe");
-          global.grunt = require("./grunt");
-          global.tasks = require("./tasks");
-          global.terminal = require("./terminal");
-          global.layouts = require("./layouts");
-          global.logger = require("./logger");
-          global.log = require("./logger").log;
-          global.warn = require("./logger").warn;
-          global.notice = require("./logger").notice;
-          global.logThrough = require("./logger").logThrough;
-          global.warnThrough = require("./logger").warnThrough;
-          global.noticeThrough = require("./logger").noticeThrough;
-          global.logFile = require("./logger").file;
-        } catch(e) {
-          reject(e);
-          return;
-        }
-
-        resolve();
-
+      function load () {
+        if (hasRunNpm) console.log('')
+        resolve()
       }
-      
-      if (!checkAdaptNodeModules()) return;
-      if (!checkRubNodeModules()) return;
-      load();
 
-    });
-
+      if (!checkAdaptNodeModules()) return
+      if (!checkRubNodeModules()) return
+      load()
+    })
   }
 }
 
-module.exports = Globals;
+module.exports = Globals

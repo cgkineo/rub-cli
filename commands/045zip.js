@@ -1,106 +1,98 @@
-'use strict';
+const path = require('path')
+const fs = require('fs-extra')
+const ZipLibrary = require('node-native-zip-compression')
+const { stat } = require('../globals/fs-globs')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log, warn } = require('../globals/logger')
 
 commands.create({
 
   index: 45,
-  command: "zip",
-  switch: "z",
-  description: "zip output folders",
+  command: 'zip',
+  switch: 'z',
+  description: 'zip output folders',
   exclusive: false,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has('zip') || commands.switches(['z']) 
-    || commands.options(['zip']);
+  shouldQueue () {
+    return commands.has('zip') || commands.switches(['z']) ||
+    commands.options(['zip'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Zipping output folder...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Zipping output folder...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
-    || commands.options(['verbose']);
-    var namePrefix = name ? name+": " : "";
+  async perform (name, options, paths) {
+    const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
+    commands.options(['verbose'])
+    const namePrefix = name ? name + ': ' : ''
     if (isVerbose) {
-      log(`${namePrefix}Zipping...`);
+      log(`${namePrefix}Zipping...`)
     } else {
-      log(`${namePrefix}Zipping...`);
+      log(`${namePrefix}Zipping...`)
     }
 
-    var now = (new Date());
-    var scoDate = (now.getYear()+"").substr(1) + twoDigit(now.getMonth()+1) 
-    + twoDigit(now.getDate())  + twoDigit(now.getHours()) 
-    + twoDigit(now.getMinutes()) + twoDigit(now.getSeconds());
+    const now = (new Date())
+    const scoDate = (now.getYear() + '').substr(1) + twoDigit(now.getMonth() + 1) +
+    twoDigit(now.getDate()) + twoDigit(now.getHours()) +
+    twoDigit(now.getMinutes()) + twoDigit(now.getSeconds())
 
-    var outputDir = path.join(pwd, "zips");
-    fsg.mkdir(outputDir);
+    const outputDir = path.join(process.cwd(), 'zips')
+    await fs.mkdirp(outputDir)
 
-    return fsg.stats({
+    const stats = await stat({
       globs: [
-        "**"
+        '**'
       ],
       location: paths.dest.location,
       dirs: false
-    }).then(function(stats) {
+    })
+    return new Promise((resolve, reject) => {
+      const archive = new ZipLibrary()
+      const zipFiles = stats.map(stat => {
+        return {
+          name: stat.relative,
+          path: stat.location
+        }
+      })
 
-      return new Promise((resolve, reject)=>{
+      if (!zipFiles.length) {
+        warn(namePrefix)
+        resolve()
+        return
+      }
 
-        var locations = stats.pluck("location");
-        var archive = new zipLibrary();
-        var zipFiles = locations.map((location)=>{
-          return {
-            name: fsg.rel(location, paths.dest.location),
-            path: location,
-          };
-        });
-
-        if (!zipFiles.length) {
-          warn(namePrefix+err);
-          resolve();
-          return;
+      archive.addFiles(zipFiles, function (err) {
+        if (err) {
+          warn(namePrefix + err)
+          resolve()
+          return
         }
 
-        archive.addFiles(zipFiles, function (err) {
+        archive.toBuffer(function (buff) {
+          const fileName = path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.zip')
+          fs.writeFile(fileName, buff, function () {
+            resolve()
+          })
+        })
+      })
+    })
 
-          if (err) {
-            warn(namePrefix+err);
-            resolve();
-            return;
-          }
-
-          archive.toBuffer(function(buff){;
-
-            var fileName = path.join(outputDir,scoDate+"_"+name.replace(/[\|&;\$%@"<>\(\)\/\\\+,]/g, "_")+".zip");
-            fs.writeFile(fileName, buff, function () {
-                resolve();
-            });
-
-          });
-
-        });
-
-      });
-
-    });
-
-    function twoDigit(num) {
-      var snum = ""+num;
-      return (snum.length < 2 ? "0" : "") + snum + "";
+    function twoDigit (num) {
+      const snum = '' + num
+      return (snum.length < 2 ? '0' : '') + snum + ''
     }
-
   }
 
-});
+})

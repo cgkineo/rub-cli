@@ -1,73 +1,72 @@
-'use strict';
+const commands = require('../globals/commands')
 
 commands.create({
 
   index: 12,
-  command: "force",
-  switch: "f",
-  description: "force rebuild",
+  command: 'force',
+  switch: 'f',
+  description: 'force rebuild',
   exclusive: false,
 
-  config() {
-    if (!commands.has('force') || commands.has("dev") 
-      || commands.has("build") || commands.has("json")) return;
-    commands.prepend("build");
+  config () {
+    if (!commands.has('force') || commands.has('dev') ||
+      commands.has('build') || commands.has('json')) return
+    commands.prepend('build')
   },
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && commands.switches(['h']));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && commands.switches(['h']))
   }
 
-});
+})
 
 commands.create({
 
   index: 13,
-  command: "forceall",
-  switch: "F",
-  description: "force clean then rebuild",
+  command: 'forceall',
+  switch: 'F',
+  description: 'force clean then rebuild',
   exclusive: false,
 
-  config() {
-    if (!commands.has('forceall') || commands.has("dev")
-      || commands.has("build") || commands.has("json")) return;
-    commands.prepend("build");
+  config () {
+    if (!commands.has('forceall') || commands.has('dev') ||
+      commands.has('build') || commands.has('json')) return
+    commands.prepend('build')
   },
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && commands.switches(['h']));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && commands.switches(['h']))
   }
 
-});
-
+})
 
 commands.create({
 
   index: 11,
-  command: "verbose",
-  switch: "v",
-  description: "verbose output",
+  command: 'verbose',
+  switch: 'v',
+  description: 'verbose output',
   exclusive: false,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && commands.switches(['h']));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && commands.switches(['h']))
   }
 
-});
+})
 
 commands.create({
 
   index: 14,
-  switch: "p",
-  description: "number of parallel tasks (2)",
+  switch: 'p',
+  description: 'number of parallel tasks (2)',
   exclusive: false,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && commands.switches(['h']));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && commands.switches(['h']))
   }
 
-});
+})

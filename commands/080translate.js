@@ -1,139 +1,139 @@
-'use strict';
+const path = require('path')
+const fs = require('fs-extra')
+const grunt = require('grunt')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log } = require('../globals/logger')
 
 commands.create({
 
   index: 80,
-  command: "translate:export",
+  command: 'translate:export',
   option: [
-    "masterLang",
-    "format",
-    "csvDelimiter",
+    'masterLang',
+    'format',
+    'csvDelimiter'
   ],
-  description: "export translatable text",
+  description: 'export translatable text',
   exclusive: true,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has(['translate:export']);
+  shouldQueue () {
+    return commands.has(['translate:export'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Performing translate export...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Performing translate export...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
-    || commands.options(['verbose']);
+  perform (name, options, paths) {
+    const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
+    commands.options(['verbose'])
 
-    var masterLang = commands.options("masterLang") || "en";
-    var format = commands.options("format") || "csv";
-    var csvDelimiter = commands.options("csvDelimiter") || ",";
+    const masterLang = commands.options('masterLang') || 'en'
+    const format = commands.options('format') || 'csv'
+    const csvDelimiter = commands.options('csvDelimiter') || ','
 
-    var gruntOpts = {
+    const gruntOpts = {
       masterLang,
       format,
       csvDelimiter,
-      languagedir: path.join(pwd, "languagefiles", name)
-    };
+      languagedir: path.join(process.cwd(), 'languagefiles', name)
+    }
 
     if (paths.isServerBuild) {
-      gruntOpts.outputdir = paths.dest.location;
+      gruntOpts.outputdir = paths.dest.location
     }
 
-    var namePrefix = name ? name+": " : "";
+    const namePrefix = name ? name + ': ' : ''
     if (isVerbose) {
-      log(`${namePrefix}Exporting translation...`);
+      log(`${namePrefix}Exporting translation...`)
     } else {
-      log(`${namePrefix}Exporting translation...`);
+      log(`${namePrefix}Exporting translation...`)
     }
 
-    return grunt.run(namePrefix, ["translate:export"], gruntOpts)
-    .then(grunt.output).catch(grunt.error);
-
+    return grunt.run(namePrefix, ['translate:export'], gruntOpts)
+      .then(grunt.output).catch(grunt.error)
   }
 
-});
+})
 
 commands.create({
 
   index: 81,
-  command: "translate:import",
+  command: 'translate:import',
   option: [
-    "targetLang",
-    "masterLang",
-    "format",
-    "csvDelimiter",
-    "replace"
+    'targetLang',
+    'masterLang',
+    'format',
+    'csvDelimiter',
+    'replace'
   ],
-  description: "import translated text",
+  description: 'import translated text',
   exclusive: true,
 
-  shouldHelp() {
-    return commands.has(['help', undefined]) || 
-    (commands.has([undefined]) && (commands.switches(['h']) 
-      || commands.options(['help'])));
+  shouldHelp () {
+    return commands.has(['help', undefined]) ||
+    (commands.has([undefined]) && (commands.switches(['h']) ||
+      commands.options(['help'])))
   },
 
-  shouldQueue() {
-    return commands.has(['translate:import']);
+  shouldQueue () {
+    return commands.has(['translate:import'])
   },
 
-  queue(isFromWatch) {
-
+  queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      //log("Performing translate import...");
-      tasks.add(this);
-      resolve();
-    });
-
+      // log("Performing translate import...");
+      tasks.add(this)
+      resolve()
+    })
   },
 
-  perform(name, options, paths) {
-    var isVerbose = commands.has("verbose") || commands.switches(['v']) 
-    || commands.options(['verbose']);
+  perform (name, options, paths) {
+    const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
+    commands.options(['verbose'])
 
-    var masterLang = commands.options("masterLang") || "en";
-    var format = commands.options("format") || "csv";
-    var csvDelimiter = commands.options("csvDelimiter") || ",";
-    var replace = commands.options("replace") || true;
-    var targetLang = commands.options("targetLang") || "new";
+    const masterLang = commands.options('masterLang') || 'en'
+    const format = commands.options('format') || 'csv'
+    const csvDelimiter = commands.options('csvDelimiter') || ','
+    const replace = commands.options('replace') || true
+    const targetLang = commands.options('targetLang') || 'new'
 
-    var gruntOpts = {
+    const gruntOpts = {
       masterLang,
       targetLang,
       format,
       csvDelimiter,
       replace,
-      languagedir: path.join(pwd, "languagefiles", name)
-    };
+      languagedir: path.join(process.cwd(), 'languagefiles', name)
+    }
 
     if (paths.isServerBuild) {
-      gruntOpts.outputdir = paths.dest.location;
-      fsg.mkdir(path.join(gruntOpts.outputdir, "course", targetLang));
+      gruntOpts.outputdir = paths.dest.location
+      fs.mkdirpSync(path.join(gruntOpts.outputdir, 'course', targetLang))
     } else {
-      fsg.mkdir(path.join("src/course", targetLang));
+      fs.mkdirpSync(path.join('src/course', targetLang))
     }
 
-    var namePrefix = name ? name+": " : "";
+    const namePrefix = name ? name + ': ' : ''
     if (isVerbose) {
-      log(`${namePrefix}Importing translation...`);
+      log(`${namePrefix}Importing translation...`)
     } else {
-      log(`${namePrefix}Importing translation...`);
+      log(`${namePrefix}Importing translation...`)
     }
 
-    return grunt.run(namePrefix, ["translate:import"], gruntOpts)
-    .then(grunt.output).catch(grunt.error);
+    return grunt.run(namePrefix, ['translate:import'], gruntOpts)
+      .then(grunt.output).catch(grunt.error)
   }
 
-});
+})
