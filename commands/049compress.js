@@ -1,9 +1,9 @@
 const _ = require('lodash')
-const grunt = require('rub2-cli/globals/grunt')
-const commands = require('rub2-cli/globals/commands')
-const tasks = require('rub2-cli/globals/tasks')
-const adapt = require('rub2-cli/globals/adapt')
-const { log } = require('rub2-cli/globals/logger')
+const grunt = require('../globals/grunt')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const adapt = require('../globals/adapt')
+const { log } = require('../globals/logger')
 
 commands.create({
 

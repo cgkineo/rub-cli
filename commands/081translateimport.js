@@ -1,9 +1,9 @@
 const path = require('path')
 const fs = require('fs-extra')
 const grunt = require('../globals/grunt')
-const commands = require('rub2-cli/globals/commands')
-const tasks = require('rub2-cli/globals/tasks')
-const { log } = require('rub2-cli/globals/logger')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log } = require('../globals/logger')
 
 commands.create({
 

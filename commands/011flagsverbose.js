@@ -1,4 +1,4 @@
-const commands = require('rub2-cli/globals/commands')
+const commands = require('../globals/commands')
 
 commands.create({
 

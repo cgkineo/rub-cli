@@ -1,10 +1,10 @@
 const path = require('path')
 const fs = require('fs-extra')
 const ZipLibrary = require('node-native-zip-compression')
-const { stats } = require('rub2-cli/globals/fs-globs')
-const commands = require('rub2-cli/globals/commands')
-const tasks = require('rub2-cli/globals/tasks')
-const { log, warn } = require('rub2-cli/globals/logger')
+const { stats } = require('../globals/fs-globs')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log, warn } = require('../globals/logger')
 
 commands.create({
 

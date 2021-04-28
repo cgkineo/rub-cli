@@ -1,7 +1,7 @@
-const commands = require('rub2-cli/globals/commands')
-const tasks = require('rub2-cli/globals/tasks')
-const { log } = require('rub2-cli/globals/logger')
-const { remove } = require('rub2-cli/globals/fs-globs')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const { log } = require('../globals/logger')
+const { remove } = require('../globals/fs-globs')
 
 commands.create({
 

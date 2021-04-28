@@ -1,11 +1,11 @@
 const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
-const { stats, posix } = require('rub2-cli/globals/fs-globs')
-const commands = require('rub2-cli/globals/commands')
-const tasks = require('rub2-cli/globals/tasks')
-const adapt = require('rub2-cli/globals/adapt')
-const { log } = require('rub2-cli/globals/logger')
+const { stats, posix } = require('../globals/fs-globs')
+const commands = require('../globals/commands')
+const tasks = require('../globals/tasks')
+const adapt = require('../globals/adapt')
+const { log } = require('../globals/logger')
 
 commands.create({
 
