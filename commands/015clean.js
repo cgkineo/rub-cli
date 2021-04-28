@@ -48,8 +48,9 @@ commands.create({
     let globs
     if (paths.isServerBuild) {
       globs = [
-        '**',
-        '!/course/'
+        '!course/**',
+        '!course',
+        '**'
       ]
     } else {
       globs = ['**']

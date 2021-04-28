@@ -177,11 +177,19 @@ commands.create({
       dirs: false
     })
     const storedAssets = assets.map(asset => asset.location)
-    const difference = _.difference(storedAssets, fileAssetListPaths)
-    const redundants = difference.map((item) => {
-      return path.relative(paths.dest.location, item)
+    let difference = _.difference(storedAssets, fileAssetListPaths).map(location => posix(path.relative(paths.dest.location, location)))
+    const handlebars = await stats({
+      globs: [
+        '**/*.hbs'
+      ],
+      location: paths.src.location,
+      dirs: false
     })
-    redundants.forEach((redundant) => {
+    handlebars.forEach((handlebar) => {
+      const hbsFile = fs.readFileSync(handlebar.location).toString()
+      difference = difference.filter(location => !hbsFile.includes(location))
+    })
+    difference.forEach((redundant) => {
       log(`${namePrefix}Asset redundant: ` + redundant)
     })
   }
