@@ -55,7 +55,7 @@ class Patch {
 
     return Promise.all(promises).then(() => {
       adapt.package.rubpatchversion = rub.version
-      const unminified = JSON.stringify(adapt.package, null, 4)
+      const unminified = JSON.stringify(adapt.package, null, 2)
       fs.writeFileSync(path.join(process.cwd(), 'package.json'), unminified)
     })
   }
