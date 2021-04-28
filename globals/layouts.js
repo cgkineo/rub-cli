@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 const fsg = require('../globals/fs-globs')
+const async = require('async')
 
 class Layouts {
   static load () {
@@ -11,6 +12,7 @@ class Layouts {
       })
     }).then(async (layout) => {
       if (layout['src/course']) {
+        fs.mkdirpSync(path.join(process.cwd(), 'build'))
         layout['src/course'] = {
           dest: await fsg.stat(path.join(process.cwd(), 'build')),
           src: await fsg.stat(path.join(process.cwd(), 'src')),
@@ -29,28 +31,18 @@ class Layouts {
 
       // collect all builds immediate subfolders, attach to layout.builds[]
       const buildsPath = path.join(process.cwd(), 'builds')
-      return fsg.stats({ globs: '**/course/config.*', location: buildsPath }).then((stats) => {
-        return stats.each(async (stat, next, resolve, reject) => {
-          if (!stat) {
-            return resolve(layout)
-          }
-
-          const moduleDir = path.join(stat.dir, '..')
-          const moduleDirStat = await fsg.stat(moduleDir)
-
-          const moduleName = path.relative(buildsPath, moduleDir)
-
-          if (moduleDirStat.isDir) {
-            layout[moduleName] = {
-              dest: moduleDirStat,
-              src: await fsg.stat(path.join(process.cwd(), 'src')),
-              isServerBuild: true
-            }
-          }
-
-          next()
-        })
+      const stats = await fsg.stats({ globs: '**/course/config.*', location: buildsPath })
+      await async.forEachOfLimit(stats, 1, async (stat) => {
+        const moduleName = path.join(stat.dir, '..')
+        const moduleDirStat = await fsg.stat(path.join(buildsPath, moduleName), process.cwd())
+        if (!moduleDirStat.isDirectory()) return
+        layout[moduleName] = {
+          dest: moduleDirStat,
+          src: await fsg.stat(path.join(process.cwd(), 'src'), process.cwd()),
+          isServerBuild: true
+        }
       })
+      return layout
     })
   }
 }

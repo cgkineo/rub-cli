@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
+const { posix } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const { log, notice } = require('../globals/logger')
@@ -100,8 +101,8 @@ commands.create({
   },
 
   urlStat (url) {
-    const urlParse = new URL(url)
-    const fileName = path.join(this.path, urlParse.pathname)
+    const urlParse = new URL(url, 'https://localhost/')
+    const fileName = posix(path.join(this.path, urlParse.pathname))
     if (!fs.existsSync(fileName)) {
       return urlParse
     }
@@ -150,40 +151,40 @@ commands.create({
 
   request (req, res) {
     const stat = this.urlStat(req.url)
-    switch (path.dirname(stat.path)) {
-      case '/__server__/poll':
-        if (stat.search) {
-          const timestamp = parseInt(stat.search.substr(1))
-          if (!isNaN(timestamp)) {
-            for (let i = 0; i < this._reloadItems.length; i++) {
-              if (this._reloadItems[i].lastEvent > timestamp) {
-                res.writeHead(200, { 'Content-Type': 'text/json' })
-                res.write(JSON.stringify(this._reloadItems[i]))
-                res.end()
-                return
-              }
+    if (stat.pathname === '/__server__/poll/') {
+      if (stat.search) {
+        const timestamp = parseInt(stat.search.substr(1))
+        if (!isNaN(timestamp)) {
+          for (let i = 0; i < this._reloadItems.length; i++) {
+            if (this._reloadItems[i].lastEvent > timestamp) {
+              res.writeHead(200, { 'Content-Type': 'text/json' })
+              res.write(JSON.stringify(this._reloadItems[i]))
+              res.end()
+              return
             }
           }
         }
-        res.writeHead(200, { 'Content-Type': 'text/json' })
-        res.write(JSON.stringify({ error: '200 Not Found' }))
+      }
+      res.writeHead(200, { 'Content-Type': 'text/json' })
+      res.write(JSON.stringify({ error: '200 Not Found' }))
+      res.end()
+      return
+    }
+    if (stat.pathname.startsWith('/__server__/')) {
+      const filename = path.join(__dirname, stat.pathname)
+
+      if (!fs.existsSync(filename)) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' })
+        res.write('404 Not Found\n')
         res.end()
         return
-      case '/__server__':
-        const filename = path.join(__dirname, stat.path)
+      }
 
-        if (!fs.existsSync(filename)) {
-          res.writeHead(404, { 'Content-Type': 'text/plain' })
-          res.write('404 Not Found\n')
-          res.end()
-          return
-        }
-
-        const mimeType = this._mimeTypesByExtension[path.extname(filename).split('.')[1]]
-        res.writeHead(200, mimeType)
-        const fileStream = fs.createReadStream(filename)
-        fileStream.pipe(res)
-        return
+      const mimeType = this._mimeTypesByExtension[path.extname(filename).split('.')[1]]
+      res.writeHead(200, mimeType)
+      const fileStream = fs.createReadStream(filename)
+      fileStream.pipe(res)
+      return
     }
 
     if (!stat.filename) {

@@ -22,9 +22,8 @@ process.on('unhandledRejection', (error, promise) => {
   } catch (err) {
     if (rub.failText) {
       warn(rub.failText)
-    } else {
-      warn(err)
     }
+    console.log(err)
     process.exit()
   }
 })()

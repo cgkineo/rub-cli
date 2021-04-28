@@ -14,10 +14,16 @@ const slash = (location) => {
 }
 
 const resolve = async (globs, options = { nodir: true }) => {
+  globs = Array.isArray(globs) ? globs : [globs]
+  globs = globs.filter(Boolean)
   return new Promise((resolve, reject) => {
     globber(globs, options, (err, matches) => {
       if (err) return reject(err)
-      resolve(_.uniq(matches.map(posix)).filter(name => name !== '..' && name !== '.'))
+      const locations = _.uniq(matches.map(posix)).filter(name => name !== '..' && name !== '.').filter(name => {
+        // filter negated globs
+        return !globs.filter(glob => glob[0] === '!').find(glob => minimatch(name, glob, { flipNegate: true }))
+      })
+      resolve(locations)
     })
   })
 }
@@ -25,6 +31,7 @@ const resolve = async (globs, options = { nodir: true }) => {
 const stat = async (location, from = '') => {
   location = posix(location)
   from = posix(from)
+  location.startsWith(from) && (location = posix(path.relative(from, location)))
   const absolute = posix(path.resolve(from, location))
   from = !from ? location : from
   const stat = await fs.stat(absolute)

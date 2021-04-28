@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
-  "failText": "Please run 'npm install -g rub-cli'",
+  "failText": "Please run: 'npm install -g rub-cli'",
   "author": "Oliver Foster, Kineo",
   "license": "GPL-3.0",
   "repository": "https://github.com/cgkineo/rub-cli",
