@@ -65,7 +65,7 @@ commands.create({
       log('Checking for rub updates...')
 
       adapt.package.rublastupdatetime = Date.now()
-      const unminified = JSON.stringify(adapt.package, null, 4)
+      const unminified = JSON.stringify(adapt.package, null, 2)
       fs.writeFileSync(path.join(process.cwd(), 'package.json'), unminified)
 
       download(rub.versionURL, (data) => {

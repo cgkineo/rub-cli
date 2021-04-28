@@ -113,7 +113,7 @@ class Watch {
   constructor ({
     globs = '**',
     location = '',
-    interval = 200,
+    interval = 100,
     callback = () => {},
     changed = [],
     watcher = null,
@@ -128,7 +128,9 @@ class Watch {
     this.debounceDelay = debounceDelay
     this.report = _.debounce(this.report.bind(this), this.debounceDelay)
     watcher.on('all', (status, filepath) => {
-      if (watches.isPaused || !filepath) return
+      if (watches.isPaused || !filepath) {
+        return
+      }
       changed.push({ change: status, location: filepath })
       this.report()
     })
@@ -146,7 +148,9 @@ class Watch {
   }
 
   report () {
+    watches.pause()
     this.callback(this.changed)
+    watches.play()
   }
 
   clear () {
@@ -181,12 +185,12 @@ const watch = async ({
 }
 
 const watches = {
-  isPaused: false,
+  isPaused: 0,
   pause () {
-    watches.isPaused = true
+    watches.isPaused++
   },
   play () {
-    watches.isPaused = false
+    watches.isPaused--
   }
 }
 

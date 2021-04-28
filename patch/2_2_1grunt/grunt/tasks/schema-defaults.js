@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 function copyToDefaults(obj, target) {
                     _.each(obj, function(val, key) {
                         if (val['type'] == 'array') {
-                            
+
                             if (val.hasOwnProperty('default')) {
                                 target[key] = val['default'];
                             }

@@ -56,8 +56,7 @@ commands.create({
         globs: [
           'course/**'
         ],
-        location: paths.dest.location,
-        interval: 200
+        location: paths.dest.location
       }, (changes) => {
         if (this._allLayouts) return
         if (this._changedLayouts[name]) return
@@ -84,8 +83,7 @@ commands.create({
         globs: [
           'course/**'
         ],
-        location: paths.src.location,
-        interval: 200
+        location: paths.src.location
       }, (changes) => {
         if (this._allLayouts) return
         if (this._changedLayouts['src/course']) return
@@ -125,8 +123,7 @@ commands.create({
           'core/templates/*',
           '!course'
         ],
-        location: paths.src.location,
-        interval: 200
+        location: paths.src.location
       }, (changes) => {
         if (this._allLayouts) return
         this._allLayouts = true
@@ -173,8 +170,7 @@ commands.create({
           'core/fonts/*',
           '!course'
         ],
-        location: paths.src.location,
-        interval: 200
+        location: paths.src.location
       }, (changes) => {
         if (this._allLayouts) return
         this._allLayouts = true
@@ -218,16 +214,16 @@ commands.create({
         for (const k in this._clearWatchPaths) {
           this._clearWatchPaths[k].clear()
         }
-        fsg.watches.play()
         this.finished()
+        fsg.watches.play()
       })
     } else {
       tasks.perform(this._changedLayouts).then(() => {
         for (const k in this._clearWatchPaths) {
           this._clearWatchPaths[k].clear()
         }
-        fsg.watches.play()
         this.finished()
+        fsg.watches.play()
       })
     }
   },
