@@ -9,6 +9,7 @@ if (fs.existsSync(path.join(pwd, 'package.json'))) {
     hasNewer: fs.existsSync(path.join(pwd, 'node_modules/grunt-newer')),
     hasScripts: fs.existsSync(path.join(pwd, 'grunt/tasks/scripts.js')),
     hasMinify: fs.existsSync(path.join(pwd, 'grunt/tasks/minify.js')),
+    hasCompress: fs.existsSync(path.join(pwd, 'grunt/tasks/compress.js')),
     hasGruntFolder: fs.existsSync(path.join(pwd, 'grunt')),
     package: pkgJSON
   }

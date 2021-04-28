@@ -4,17 +4,17 @@ const fs = require('fs-extra')
 const async = require('async')
 const { path: ffprobePath } = require('ffprobe-static')
 const ffprobe = require('ffprobe')
-const fsg = require('../globals/fs-globs')
+const fsg = require('rub2-cli/globals/fs-globs')
 const imagesize = require('image-size-big-max-buffer')
-const { match, posix } = require('../globals/fs-globs')
-const commands = require('../globals/commands')
-const tasks = require('../globals/tasks')
-const { log, notice } = require('../globals/logger')
-const rootPath = require('../rootPath')
+const { match, posix } = require('rub2-cli/globals/fs-globs')
+const commands = require('rub2-cli/globals/commands')
+const tasks = require('rub2-cli/globals/tasks')
+const { log, notice } = require('rub2-cli/globals/logger')
+const rootPath = require('rub2-cli/rootPath')
 
 commands.create({
 
-  index: 47,
+  index: 48,
   command: 'techspec',
   switch: 't',
   description: 'check assets against techspec',
