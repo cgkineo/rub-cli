@@ -1,17 +1,19 @@
-'use strict'
+const path = require('path')
+const fs = require('fs-extra')
+const fsg = require('../globals/fs-globs')
 
 class Layouts {
   static load () {
     return new Promise((resolve) => {
       resolve({
-        'builds': fs.existsSync(path.join(pwd, 'builds')),
-        'src/course': fs.existsSync(path.join(pwd, 'src/course'))
+        'builds': fs.existsSync(path.join(process.cwd(), 'builds')),
+        'src/course': fs.existsSync(path.join(process.cwd(), 'src/course'))
       })
-    }).then((layout) => {
+    }).then(async (layout) => {
       if (layout['src/course']) {
         layout['src/course'] = {
-          dest: fsg.stat(path.join(pwd, 'build')),
-          src: fsg.stat(path.join(pwd, 'src')),
+          dest: await fsg.stat(path.join(process.cwd(), 'build')),
+          src: await fsg.stat(path.join(process.cwd(), 'src')),
           isServerBuild: false
         }
       } else {
@@ -26,22 +28,22 @@ class Layouts {
       }
 
       // collect all builds immediate subfolders, attach to layout.builds[]
-      const buildsPath = path.join(pwd, 'builds')
-      return fsg('**/course/config.*', buildsPath).stats().then((stats) => {
-        return stats.each((stat, next, resolve, reject) => {
+      const buildsPath = path.join(process.cwd(), 'builds')
+      return fsg.stats({ globs: '**/course/config.*', location: buildsPath }).then((stats) => {
+        return stats.each(async (stat, next, resolve, reject) => {
           if (!stat) {
             return resolve(layout)
           }
 
           const moduleDir = path.join(stat.dir, '..')
-          const moduleDirStat = fsg.stat(moduleDir)
+          const moduleDirStat = await fsg.stat(moduleDir)
 
-          const moduleName = fsg.rel(moduleDir, buildsPath)
+          const moduleName = path.relative(buildsPath, moduleDir)
 
           if (moduleDirStat.isDir) {
             layout[moduleName] = {
               dest: moduleDirStat,
-              src: fsg.stat(path.join(pwd, 'src')),
+              src: await fsg.stat(path.join(process.cwd(), 'src')),
               isServerBuild: true
             }
           }

@@ -1,4 +1,6 @@
-'use strict'
+const commands = require('../globals/commands')
+const { pad } = require('../globals/logger')
+const layouts = require('../globals/layouts')
 
 let locals = {
   _tasks: [],
@@ -6,7 +8,7 @@ let locals = {
 }
 
 class Tasks {
-  static perform (layout) {
+  static async perform (layout) {
     if (!Tasks._items.length) {
       return Tasks.next()
     }
@@ -17,7 +19,7 @@ class Tasks {
       return Tasks.next(outputPaths)
     }
 
-    return layouts.load(pwd).then((layout) => {
+    return layouts.load(process.cwd()).then((layout) => {
       let outputPaths = Tasks.filterOutputDirs(layout)
       if (!outputPaths) return Tasks.next()
       return Tasks.next(outputPaths)
@@ -60,7 +62,7 @@ class Tasks {
       return a.cmd.index - b.cmd.index
     })
 
-    logger.pad(2)
+    pad(2)
     let task = Tasks._items.shift()
     if (!task || !outputPaths) {
       return new Promise((resolve) => { resolve() })
@@ -71,7 +73,7 @@ class Tasks {
 
   static performCommandsOnOutputPaths (task, outputPaths) {
     const simultaneousTasks = parseInt(commands.switches('p')) || 2
-    const runningTasks = 0
+    let runningTasks = 0
 
     const configs = []
     for (const name in outputPaths) {
@@ -93,14 +95,14 @@ class Tasks {
         if (configs.length === 0) return
 
         const config = configs.shift()
-        const promise = task.cmd.perform.call(task.cmd, config.name, task.options, config.outputPath)
+        const promise = task.cmd.perform(config.name, task.options, config.outputPath)
         if (promise && promise.then) {
           runningTasks++
-          promise.then(function () {
+          return promise.then(() => {
             runningTasks--
-            logger.pad(2)
+            pad(2)
             next()
-          }).catch((err) => {
+          }, err => {
             runningTasks--
             console.log(err)
             next()
@@ -113,10 +115,6 @@ class Tasks {
     }).then(() => {
       return Tasks.next(outputPaths)
     })
-
-    // return Promise.all(promises).then(()=>{
-    //   return Tasks.next(outputPaths);
-    // });
   }
 
   static add (cmd, options) {

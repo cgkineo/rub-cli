@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const commands = require('../globals/commands')
+const fsg = require('../globals/fs-globs')
 const tasks = require('../globals/tasks')
 const { log, notice } = require('../globals/logger')
 
@@ -45,13 +46,13 @@ commands.create({
   _runningTasks: {},
   _allLayouts: false,
 
-  perform (name, options, paths) {
+  async perform (name, options, paths) {
     tasks.isWaiting = true
 
     if (paths.isServerBuild && !this._watchPaths['course:' + name]) {
       this._watchPaths['course:' + name] =
       this._clearWatchPaths['course:' + name] =
-      fsg.watch({
+      await fsg.watch({
         globs: [
           'course/**'
         ],
@@ -62,9 +63,8 @@ commands.create({
         if (this._changedLayouts[name]) return
         this._changedLayouts[name] = paths
 
-        const changeTypes = changes.pluck('change')
-        const wasAnythingAddedOrDeleted = (changeTypes.indexOf('added') > -1 ||
-          changeTypes.indexOf('deleted') > -1)
+        const changeTypes = changes.map(item => item.change)
+        const wasAnythingAddedOrDeleted = (changeTypes.includes('added') || changeTypes.includes('deleted'))
         if (wasAnythingAddedOrDeleted) {
           log('forcing rebuild...')
           commands.set('switch', 'F')
@@ -80,7 +80,7 @@ commands.create({
     } else if (!paths.isServerBuild && !this._watchPaths['src/course']) {
       this._watchPaths['src/course'] =
       this._clearWatchPaths['src/course'] =
-      fsg.watch({
+      await fsg.watch({
         globs: [
           'course/**'
         ],
@@ -91,9 +91,8 @@ commands.create({
         if (this._changedLayouts['src/course']) return
         this._changedLayouts['src/course'] = paths
 
-        const changeTypes = changes.pluck('change')
-        const wasAnythingAddedOrDeleted = (changeTypes.indexOf('added') > -1 ||
-          changeTypes.indexOf('deleted') > -1)
+        const changeTypes = changes.map(item => item.change)
+        const wasAnythingAddedOrDeleted = (changeTypes.includes('added') || changeTypes.includes('deleted'))
         if (wasAnythingAddedOrDeleted) {
           log('forcing rebuild...')
           commands.set('switch', 'F')
@@ -109,7 +108,7 @@ commands.create({
     }
 
     if (!this._watchPaths['src:' + paths.src.location]) {
-      this._watchPaths['src:' + paths.src.location] = fsg.watch({
+      this._watchPaths['src:' + paths.src.location] = await fsg.watch({
         globs: [
           '*/*/bower.json',
           '*/*/js/**/*',
@@ -132,9 +131,8 @@ commands.create({
         if (this._allLayouts) return
         this._allLayouts = true
 
-        const changeTypes = changes.pluck('change')
-        const wasAnythingAddedOrDeleted = (changeTypes.indexOf('added') > -1 ||
-          changeTypes.indexOf('deleted') > -1)
+        const changeTypes = changes.map(item => item.change)
+        const wasAnythingAddedOrDeleted = (changeTypes.includes('added') || changeTypes.includes('deleted'))
         if (wasAnythingAddedOrDeleted) {
           log('forcing rebuild...')
           commands.set('switch', 'F')
@@ -150,7 +148,7 @@ commands.create({
     }
 
     if (!this._watchPaths['src:assets:' + paths.src.location]) {
-      this._watchPaths['src:assets:' + paths.src.location] = fsg.watch({
+      this._watchPaths['src:assets:' + paths.src.location] = await fsg.watch({
         globs: [
           '*/*/properties.schema',
           '*/*/assets/**/*',
@@ -181,9 +179,8 @@ commands.create({
         if (this._allLayouts) return
         this._allLayouts = true
 
-        const changeTypes = changes.pluck('change')
-        const wasAnythingAddedOrDeleted = (changeTypes.indexOf('added') > -1 ||
-          changeTypes.indexOf('deleted') > -1)
+        const changeTypes = changes.map(item => item.change)
+        const wasAnythingAddedOrDeleted = (changeTypes.includes('added') || changeTypes.includes('deleted'))
         if (wasAnythingAddedOrDeleted) {
           log('forcing rebuild...')
           commands.set('switch', 'F')

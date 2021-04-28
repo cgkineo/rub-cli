@@ -47,21 +47,19 @@ commands.create({
     return true
   },
 
-  queue (isFromWatch) {
+  async queue (isFromWatch) {
     return new Promise((resolve, reject) => {
       if (rub.custom) {
         notice('Custom version of rub.')
         notice('No updates available.')
-        resolve()
-        return
+        return resolve()
       }
 
       const age = Date.now() - (adapt.package.rublastupdatetime || 0)
       if (age < 3600000 && !commands.has('update')) { // an hour since last check
-      // if (age < 300000) { // 5 minutes since last check
-      // if (age < 60000) { // 1 minutes since last check
-        resolve()
-        return
+        // if (age < 300000) { // 5 minutes since last check
+        // if (age < 60000) { // 1 minutes since last check
+        return resolve()
       }
 
       log('Checking for rub updates...')
@@ -74,7 +72,8 @@ commands.create({
         try {
           data = JSON.parse(data)
         } catch (e) {
-          return
+          notice('Failed to fetch update data.')
+          return resolve()
         }
         if (!semver.lt(rub.version, data.version)) {
           notice('No updates needed.')

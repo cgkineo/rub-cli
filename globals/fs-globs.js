@@ -1,99 +1,197 @@
+const _ = require('lodash')
 const globber = require('globs')
 const fs = require('fs-extra')
 const path = require('path')
 const minimatch = require('minimatch')
+const gaze = require('gaze')
 
-const posix = (path) => {
-  return path.replace(/\\/g, '/')
+const posix = (location) => {
+  return location.replace(/\\/g, '/')
 }
 
-const slash = (path) => {
-  return path[path.length - 1] === '/' ? path : `${path}/`
+const slash = (location) => {
+  return location[location.length - 1] === '/' ? location : `${location}/`
 }
 
-const resolve = async (globs, options) => {
+const resolve = async (globs, options = { nodir: true }) => {
   return new Promise((resolve, reject) => {
     globber(globs, options, (err, matches) => {
       if (err) return reject(err)
-      resolve(matches.map(posix))
+      resolve(_.uniq(matches.map(posix)).filter(name => name !== '..' && name !== '.'))
     })
   })
 }
 
-module.exports = {
+const stat = async (location, from = '') => {
+  location = posix(location)
+  from = posix(from)
+  const absolute = posix(path.resolve(from, location))
+  from = !from ? location : from
+  const stat = await fs.stat(absolute)
+  stat.location = absolute
+  stat.relative = location
+  Object.assign(stat, path.parse(location))
+  return stat
+}
 
-  posix,
+const copy = async ({
+  globs = '**',
+  location = null,
+  to = process.cwd(),
+  force = false
+} = {}) => {
+  if (!location) throw new Error('Cannot copy from null location')
+  location = slash(posix(location))
+  to = slash(posix(to))
+  const relativePaths = await resolve(globs, { cwd: location })
+  for (let start of relativePaths) {
+    const from = path.resolve(location, start)
+    const end = path.resolve(to, start)
+    const stat = await fs.stat(from)
+    if (stat.isDirectory()) {
+      await fs.mkdirp(end)
+      continue
+    }
+    const mode = force ? 0 : fs.constants.COPYFILE_EXCL
+    await fs.copyFile(from, end, mode)
+  }
+}
 
-  slash,
+const remove = async ({
+  globs = '**',
+  location = null
+} = {}) => {
+  if (!location) throw new Error('Cannot remove from null location')
+  location = slash(posix(location))
+  const relativePaths = (await resolve(globs, { cwd: location })).reverse()
+  for (let start of relativePaths) {
+    start = path.resolve(location, start)
+    const stat = await fs.stat(start)
+    if (stat.isDirectory()) {
+      await fs.remove(start)
+      continue
+    }
+    await fs.rm(start)
+  }
+}
 
-  resolve,
+const stats = async ({
+  globs = '**',
+  location = null,
+  dirs = false
+} = {}) => {
+  if (!location) throw new Error('Cannot stat from null location')
+  location = slash(posix(location))
+  const relativePaths = (await resolve(globs, { cwd: location, nodir: !dirs })).reverse()
+  const stats = []
+  for (let start of relativePaths) {
+    const pathStat = await stat(start, location)
+    if (pathStat.isDirectory()) continue
+    stats.push(pathStat)
+  }
+  return stats
+}
 
-  async copy ({
+const match = async ({
+  globs = ['**'],
+  location = null
+} = {}) => {
+  if (!globs) return false
+  if (!location) throw new Error('Cannot match null location')
+  globs = Array.isArray(globs) ? globs : [globs]
+  return globs.some(glob => minimatch(location, glob))
+}
+
+class Watch {
+  constructor ({
     globs = '**',
-    location = null,
-    to = process.cwd(),
-    force = false
+    location = '',
+    interval = 200,
+    callback = () => {},
+    changed = [],
+    watcher = null,
+    debounceDelay = 250
   } = {}) {
-    if (!location) throw new Error('Cannot copy from null location')
-    location = slash(posix(location))
-    to = slash(posix(to))
-    const relativePaths = await resolve(globs, { cwd: location })
-    for (let start of relativePaths) {
-      const end = path.resolve(to, start)
-      const stat = await fs.stat(start)
-      if (stat.isDirectory()) {
-        await fs.mkdirp(end)
-        continue
+    this.globs = globs
+    this.location = location
+    this.interval = interval
+    this.callback = callback
+    this.changed = changed
+    this.watcher = watcher
+    this.debounceDelay = debounceDelay
+    this.report = _.debounce(this.report.bind(this), this.debounceDelay)
+    watcher.on('all', (status, filepath) => {
+      if (watches.isPaused || !filepath) return
+      changed.push({ change: status, location: filepath })
+      this.report()
+    })
+    watcher.on('error', err => {
+      if (typeof err === 'string') {
+        err = new Error(err)
       }
-      const mode = force ? 0 : fs.constants.COPYFILE_EXCL
-      await fs.copyFile(start, end, mode)
-    }
-  },
-
-  async remove ({
-    globs = '**',
-    location = null
-  } = {}) {
-    if (!location) throw new Error('Cannot remove from null location')
-    location = slash(posix(location))
-    const relativePaths = (await resolve(globs, { cwd: location })).reverse()
-    for (let start of relativePaths) {
-      start = path.resolve(location, start)
-      const stat = await fs.stat(start)
-      if (stat.isDirectory()) {
-        await fs.remove(start)
-        continue
+      switch (err.code) {
+        case 'ENOENT':
+        case 'EPERM':
+          return
       }
-      await fs.rm(start)
-    }
-  },
-
-  async stat ({
-    globs = '**',
-    location = null
-  } = {}) {
-    if (!location) throw new Error('Cannot stat from null location')
-    location = slash(posix(location))
-    const relativePaths = (await resolve(globs, { cwd: location })).reverse()
-    const stats = []
-    for (let start of relativePaths) {
-      const absolute = path.resolve(location, start)
-      const stat = await fs.stat(absolute)
-      stat.location = absolute
-      stat.relative = start
-      stats.push(stat)
-    }
-    return stats
-  },
-
-  async match ({
-    globs = ['**'],
-    location = null
-  } = {}) {
-    if (!globs) return false
-    if (!location) throw new Error('Cannot match null location')
-    globs = Array.isArray(globs) ? globs : [globs]
-    return globs.some(glob => minimatch(location, glob))
+      console.log(err)
+    })
   }
 
+  report () {
+    this.callback(this.changed)
+  }
+
+  clear () {
+    this.changed = []
+  }
+}
+
+const watch = async ({
+  globs = ['**'],
+  location = null,
+  interval = 200,
+  debounceDelay = 250
+} = {}, callback = () => {}) => {
+  if (!location) throw new Error('Cannot watch null location')
+  return new Promise((resolve, reject) => {
+    gaze(globs, {
+      cwd: location,
+      interval,
+      debounceDelay: 0
+    }, (err, watcher) => {
+      if (err) return reject(err)
+      resolve(new Watch({
+        globs,
+        location,
+        interval,
+        callback,
+        watcher,
+        debounceDelay
+      }))
+    })
+  })
+}
+
+const watches = {
+  isPaused: false,
+  pause () {
+    watches.isPaused = true
+  },
+  play () {
+    watches.isPaused = false
+  }
+}
+
+module.exports = {
+  posix,
+  slash,
+  resolve,
+  copy,
+  remove,
+  stat,
+  stats,
+  match,
+  watch,
+  watches
 }

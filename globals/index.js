@@ -10,15 +10,18 @@ class Globals {
   static initialize () {
     return new Promise((resolve, reject) => {
       if (!adapt) {
+        rub.failText = 'Not in an Adapt folder'
         return reject(new Error('Not in an Adapt folder'))
       }
 
       if (!adapt.hasGruntFolder) {
-        return reject(new Error('Open source `grunt` folder expected. Rub is now built ontop of grunt.'))
+        rub.failText = 'Not in an Adapt Folder. Open source `grunt` folder expected. Rub is built ontop of grunt.'
+        return reject(new Error('Not in an Adapt Folder. Open source `grunt` folder expected. Rub is built ontop of grunt.'))
       }
 
       if (rub.isLegacy) {
-        return reject(new Error("Legacy rub is installed. Please use './rub' to run the legacy version"))
+        rub.failText = `Legacy rub is installed. Please use './rub' to run the legacy version`
+        return reject(new Error(`Legacy rub is installed. Please use './rub' to run the legacy version`))
       }
 
       console.log('')
@@ -27,7 +30,7 @@ class Globals {
       function checkAdaptNodeModules () {
         if (fs.existsSync(path.join(process.cwd(), 'node_modules'))) return checkRubNodeModules()
 
-        console.log("Running 'npm install' in your development folder...")
+        console.log(`Running 'npm install' in your project folder...`)
         hasRunNpm = true
 
         let child = spawn((/^win/.test(process.platform) ? 'npm.cmd' : 'npm'), ['install'], {
@@ -60,7 +63,7 @@ class Globals {
       function checkRubNodeModules () {
         if (fs.existsSync(path.join(rootPath, 'node_modules'))) return load()
 
-        console.log("Running 'npm install' in your buildkit folder...")
+        console.log(`Running 'npm install' in your project folder...`)
         hasRunNpm = true
 
         let exec = require('child_process').exec
@@ -69,7 +72,6 @@ class Globals {
         }, function (error) {
           if (error && error.signal) {
             console.error('ERROR: npm install failed.')
-            // console.log(error);
             reject(error)
             return
           }

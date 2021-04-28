@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const grunt = require('grunt')
+const grunt = require('../globals/grunt')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const adapt = require('../globals/adapt')

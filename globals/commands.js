@@ -57,7 +57,7 @@ class Commands {
 
       // turn known switches into options
       for (let k in Commands._switches) {
-        const found = false
+        let found = false
         Commands._cmdObjects.forEach((handler) => {
           if (!handler.option) return
           if (!(handler.option instanceof Array)) {
@@ -122,7 +122,7 @@ class Commands {
     Commands._running = next
     next.done = true
     Commands._wasHandled = true
-    next.queue().then((options) => {
+    next.queue().then(options => {
       options = options || {}
 
       if (Commands._running.exclusive || options.stop) {
@@ -131,6 +131,8 @@ class Commands {
       } else {
         setTimeout(Commands.next, 0)
       }
+    }, err => {
+      console.log(err)
     })
   }
 
@@ -188,7 +190,7 @@ class Commands {
     for (let k in Commands._switches) {
       for (let i = 0, l = hasSwitches.length; i < l; i++) {
         let swch = hasSwitches[i]
-        if (_.contains(k, swch)) {
+        if (_.includes(k, swch)) {
           return Commands._switches[k]
         }
       }

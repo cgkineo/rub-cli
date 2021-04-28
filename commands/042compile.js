@@ -2,7 +2,7 @@ const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
 const semver = require('semver')
-const grunt = require('grunt')
+const grunt = require('../globals/grunt')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const adapt = require('../globals/adapt')
@@ -11,39 +11,7 @@ const { log } = require('../globals/logger')
 
 commands.create({
 
-  index: 30,
-  command: 'build',
-  switch: 'b',
-  description: 'production build (no sourcemaps, with uglify)',
-  exclusive: false,
-
-  shouldHelp () {
-    return commands.has(['help', undefined]) ||
-    (commands.has([undefined]) && (commands.switches(['h']) ||
-      commands.options(['help'])))
-  }
-
-})
-
-commands.create({
-
-  index: 40,
-  command: 'dev',
-  switch: 'd',
-  description: 'development build (with sourcemaps, no uglify)',
-  exclusive: false,
-
-  shouldHelp () {
-    return commands.has(['help', undefined]) ||
-    (commands.has([undefined]) && (commands.switches(['h']) ||
-      commands.options(['help'])))
-  }
-
-})
-
-commands.create({
-
-  index: 41,
+  index: 42,
   name: 'compiler',
 
   config () {

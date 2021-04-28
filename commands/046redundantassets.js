@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
-const { stat, posix } = require('../globals/fs-globs')
+const { stats, posix } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const adapt = require('../globals/adapt')
@@ -52,14 +52,15 @@ commands.create({
 
     const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
 
-    const stats = await stat({
+    const jsons = await stats({
       globs: [
         'course/*.' + jsonext,
         'course/**/*.' + jsonext
       ],
-      location: paths.dest.location
+      location: paths.dest.location,
+      dirs: false
     })
-    stats.forEach((json) => {
+    jsons.forEach((json) => {
       // Read each .json file
       const currentJsonFile = fs.readFileSync(json.location).toString()
       let matches = currentJsonFile.match(jsonAssetRegExp)
@@ -101,12 +102,13 @@ commands.create({
         fileAssetListPaths.push(filePath)
       }
     })
-    const csses = await stat({
+    const csses = await stats({
       globs: [
         'adapt/css/*.css',
         '*.css'
       ],
-      location: paths.dest.location
+      location: paths.dest.location,
+      dirs: false
     })
     csses.forEach((css) => {
       const cssFile = fs.readFileSync(css.location).toString()
@@ -163,7 +165,7 @@ commands.create({
         // log(`${namePrefix}Asset missing ` + cssAssetListPath);
       }
     })
-    const assets = await stat({
+    const assets = await stats({
       globs: [
         '!adapt/css/assets/**',
         'assets/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
@@ -171,12 +173,13 @@ commands.create({
         'course/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
         'course/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)'
       ],
-      location: paths.dest.location
+      location: paths.dest.location,
+      dirs: false
     })
     const storedAssets = assets.map(asset => asset.location)
     const difference = _.difference(storedAssets, fileAssetListPaths)
     const redundants = difference.map((item) => {
-      return path.relative(item, paths.dest.location)
+      return path.relative(paths.dest.location, item)
     })
     redundants.forEach((redundant) => {
       log(`${namePrefix}Asset redundant: ` + redundant)

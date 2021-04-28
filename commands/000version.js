@@ -1,6 +1,7 @@
 const commands = require('../globals/commands')
 const { log } = require('../globals/logger')
 const adapt = require('../globals/adapt')
+const adaptcli = require('../globals/adaptcli')
 const rub = require('../globals/rub')
 
 commands.create({
@@ -29,6 +30,7 @@ commands.create({
       log('Versions:')
       log()
       log('  Adapt Framework ', 'v' + adapt.version)
+      log('  Adapt CLI       ', adaptcli.version ? 'v' + adaptcli.version : 'n/a')
       log('  Rub             ', 'v' + rub.version)
       log('  Node            ', process.version)
       log()

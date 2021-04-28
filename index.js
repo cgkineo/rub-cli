@@ -1,7 +1,7 @@
 const patch = require('./globals/patch')
 const commands = require('./globals/commands')
 const tasks = require('./globals/tasks')
-const { log } = require('./globals/logger')
+const { log, warn } = require('./globals/logger')
 const rub = require('./globals/rub')
 const globals = require('./globals/index')
 
@@ -20,10 +20,10 @@ process.on('unhandledRejection', (error, promise) => {
     if (tasks.isWaiting) return
     log('Finished.')
   } catch (err) {
-    if (!err) {
-      console.log(rub.failText)
+    if (rub.failText) {
+      warn(rub.failText)
     } else {
-      console.log(err)
+      warn(err)
     }
     process.exit()
   }

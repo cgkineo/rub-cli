@@ -1,5 +1,5 @@
 const semver = require('semver')
-const grunt = require('grunt')
+const grunt = require('../globals/grunt')
 const _ = require('lodash')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')

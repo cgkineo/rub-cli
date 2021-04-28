@@ -1,11 +1,15 @@
 const _ = require('lodash')
 const path = require('path')
 const fs = require('fs-extra')
+const async = require('async')
+const { path: ffprobePath } = require('ffprobe-static')
+const ffprobe = require('ffprobe')
+const fsg = require('../globals/fs-globs')
 const imagesize = require('image-size-big-max-buffer')
-const { match } = require('../globals/fs-globs')
+const { match, posix } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
-const { log, warn, notice } = require('../globals/logger')
+const { log, notice } = require('../globals/logger')
 const rootPath = require('../rootPath')
 
 commands.create({
@@ -55,11 +59,6 @@ commands.create({
       log(`${namePrefix}Checking Techspec...`)
     }
 
-    if (!ffprobe.isSupported()) {
-      warn(`${namePrefix}Platform not supported.`)
-      return Promise.all([])
-    }
-
     const statistics = {
       totalSize: 0,
       totalChecked: 0,
@@ -68,20 +67,18 @@ commands.create({
     }
 
     return fsg.stats({
-      globs: [
-        '**'
-      ],
+      globs: _.flatten(this.techspec.medias.map(media => `**/*.+(${media.extensions.join('|')})`)),
       location: paths.dest.location
     }).then((stats) => {
       return Promise.all(stats.map((stat) => {
         return this.checkFile(stat)
-      })).then(() => {
-        stats.forEach((stat) => {
-          this.produce(stat, statistics)
+      })).then(async () => {
+        await async.forEachOfLimit(stats, 1, async (stat) => {
+          await this.produce(stat, statistics)
         })
 
         statistics.suspects.forEach((suspect) => {
-          const shortenedPath = path.relative(suspect.location, paths.dest.location)
+          const shortenedPath = posix(path.relative(paths.dest.location, suspect.location))
           notice(`${namePrefix}TechSpec failed on` + ' [' + suspect.flaggedProps.join(', ') + '] at ' + shortenedPath)
         })
 
@@ -92,7 +89,7 @@ commands.create({
     })
   },
 
-  produce (file, stats) {
+  async produce (file, stats) {
     stats.totalSize += file.size
     file.flaggedProps = []
 
@@ -100,9 +97,9 @@ commands.create({
       file.flaggedProps.push('max filesize: ' + this.bytesSizeToString(file.size, 'MB'))
     }
 
-    const isMatch = match(this.techspec.restrictedGlobs, path.relative(file.location, stats.paths.dest.location))
+    const isMatch = await match({ globs: this.techspec.restrictedGlobs, location: posix(path.relative(stats.paths.dest.location, file.location)) })
     if (isMatch) {
-      file.flaggedProps.push('path: ' + path.relative(file.location, stats.paths.dest.location))
+      file.flaggedProps.push('path: ' + posix(path.relative(stats.paths.dest.location, file.location)))
     }
 
     if (file.isFile) {
@@ -204,51 +201,45 @@ commands.create({
         case 'mp3':
         case 'ogv':
         case 'ogg':
-          if (ffprobe.isSupported()) {
-            file.width = 0
-            file.height = 0
+          file.width = 0
+          file.height = 0
 
-            const track = file.location
-            ffprobe(track, (err, probeData) => {
-              if (err) throw err
-              const video = this.pluckStream(probeData, 'video')
-              const audio = this.pluckStream(probeData, 'audio')
+          const track = file.location
+          ffprobe(track, { path: ffprobePath }, (err, probeData) => {
+            if (err) throw err
+            const video = this.pluckStream(probeData, 'video')
+            const audio = this.pluckStream(probeData, 'audio')
 
-              if (video) {
-                file.width = video.width
-                file.height = video.height
-                file.ratio = file.width / file.height
-                if (video.bit_rate !== 'N/A') {
-                  file.video_bitrate = video.bit_rate
-                }
-                if (video.r_frame_rate.indexOf('/')) {
-                  // eslint-disable-next-line no-eval
-                  file.video_fps = eval(video.r_frame_rate)
-                } else if (video.avg_frame_rate.indexOf('/')) {
-                  // eslint-disable-next-line no-eval
-                  file.video_fps = eval(video.avg_frame_rate)
-                }
-                file.video_codec = video.codec_name
+            if (video) {
+              file.width = video.width
+              file.height = video.height
+              file.ratio = file.width / file.height
+              if (video.bit_rate !== 'N/A') {
+                file.video_bitrate = video.bit_rate
               }
+              if (video.r_frame_rate.indexOf('/')) {
+                // eslint-disable-next-line no-eval
+                file.video_fps = eval(video.r_frame_rate)
+              } else if (video.avg_frame_rate.indexOf('/')) {
+                // eslint-disable-next-line no-eval
+                file.video_fps = eval(video.avg_frame_rate)
+              }
+              file.video_codec = video.codec_name
+            }
 
-              if (audio) {
+            if (audio) {
+              file.audio_bitrate = audio.bit_rate
+              if (audio.bit_rate !== 'N/A') {
                 file.audio_bitrate = audio.bit_rate
-                if (audio.bit_rate !== 'N/A') {
-                  file.audio_bitrate = audio.bit_rate
-                }
-                file.audio_codec = audio.codec_name
-                file.audio_channel_layout = audio.channel_layout
               }
+              file.audio_codec = audio.codec_name
+              file.audio_channel_layout = audio.channel_layout
+            }
 
-              resolve(file)
-            })
+            resolve(file)
+          })
 
-            return
-          } else {
-            file.width = 0
-            file.height = 0
-          }
-          break
+          return
         default:
           resolve(file)
       }
@@ -259,7 +250,7 @@ commands.create({
 
   pluckStream (probeData, codecType) {
     if (!probeData) return undefined
-    return _.findWhere(probeData.streams, { codec_type: codecType })
+    return probeData.streams.find(stream => stream.codec_type === codecType)
   },
 
   textSizeToUnit (str) {
