@@ -1,68 +1,50 @@
-'use strict';
+const path = require('path')
+const fs = require('fs-extra')
+const fsg = require('../globals/fs-globs')
+const async = require('async')
 
 class Layouts {
-
-  static load() {
-
-    return new Promise((resolve)=>{
-
+  static load () {
+    return new Promise((resolve) => {
       resolve({
-        'builds': fs.existsSync(path.join(pwd, "builds")),
-        'src/course': fs.existsSync(path.join(pwd, "src/course"))
-      });
-
-    }).then((layout)=>{
-
+        'builds': fs.existsSync(path.join(process.cwd(), 'builds')),
+        'src/course': fs.existsSync(path.join(process.cwd(), 'src/course'))
+      })
+    }).then(async (layout) => {
       if (layout['src/course']) {
-        layout['src/course'] = { 
-          dest: fsg.stat(path.join(pwd, "build")),
-          src: fsg.stat(path.join(pwd, "src")),
+        fs.mkdirpSync(path.join(process.cwd(), 'build'))
+        layout['src/course'] = {
+          dest: await fsg.stat(path.join(process.cwd(), 'build')),
+          src: await fsg.stat(path.join(process.cwd(), 'src')),
           isServerBuild: false
-        };
+        }
       } else {
-        delete layout['src/course'];
+        delete layout['src/course']
       }
 
-      var hasBuilds = !!(layout.builds);
-      delete layout.builds;
+      const hasBuilds = !!(layout.builds)
+      delete layout.builds
 
       if (!hasBuilds) {
-        return new Promise((resolve)=>{resolve(layout);});
+        return new Promise((resolve) => { resolve(layout) })
       }
 
-      // collect all builds immediate subfolders, attach to layout.builds[]      
-      var buildsPath =  path.join(pwd, "builds");
-      return fsg("**/course/config.*", buildsPath).stats().then((stats)=>{
-
-        return stats.each((stat, next, resolve, reject)=>{
-
-          if (!stat) {
-            return resolve(layout);
-          }
-
-          var moduleDir = path.join(stat.dir, "..");
-          var moduleDirStat = fsg.stat(moduleDir);
-
-          var moduleName = fsg.rel(moduleDir, buildsPath);
-
-          if (moduleDirStat.isDir) {
-            layout[moduleName] = {
-              dest: moduleDirStat,
-              src: fsg.stat(path.join(pwd, "src")),
-              isServerBuild: true
-            };
-          }
-
-          next();
-
-        });
-
-      });
-
-    });
-
+      // collect all builds immediate subfolders, attach to layout.builds[]
+      const buildsPath = path.join(process.cwd(), 'builds')
+      const stats = await fsg.stats({ globs: '**/course/config.*', location: buildsPath })
+      await async.forEachOfLimit(stats, 1, async (stat) => {
+        const moduleName = path.join(stat.dir, '..')
+        const moduleDirStat = await fsg.stat(path.join(buildsPath, moduleName), process.cwd())
+        if (!moduleDirStat.isDirectory()) return
+        layout[moduleName] = {
+          dest: moduleDirStat,
+          src: await fsg.stat(path.join(process.cwd(), 'src'), process.cwd()),
+          isServerBuild: true
+        }
+      })
+      return layout
+    })
   }
-
 }
 
-module.exports = Layouts;
+module.exports = Layouts

@@ -10,23 +10,22 @@ const { log } = require('../globals/logger')
 
 commands.create({
 
-  index: 31,
-  command: [
-    'minify'
-  ],
-  switch: 'M',
-  description: 'minify json',
+  index: 32,
+  command: 'prettify',
+  switch: 'P',
+  description: 'prettify json',
   exclusive: false,
 
   shouldHelp () {
     return commands.has(['help', undefined]) ||
     (commands.has([undefined]) && (commands.switches(['h']) ||
-    commands.options(['help'])))
+      commands.options(['help'])))
   },
 
   shouldQueue () {
-    return commands.has(['minify']) || commands.switches(['M']) ||
-    commands.options(['minify'])
+    return commands.has(['prettify']) || commands.switches(['P']) ||
+    commands.options(['prettify']) || commands.has(['dev']) ||
+    commands.switches(['d']) || commands.options(['dev'])
   },
 
   queue (isFromWatch) {
@@ -57,7 +56,7 @@ commands.create({
 
     const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
 
-    log(`${namePrefix}Minifying...`)
+    log(`${namePrefix}Prettifying...`)
 
     const jsons = await stats({
       globs: [
@@ -66,16 +65,14 @@ commands.create({
       ],
       location: path.join(paths.dest.location, 'course')
     })
-    await async.forEachLimit(jsons, 1, stat => {
-      let minified
+    return async.forEachLimit(jsons, 1, async (stat) => {
       try {
-        minified = JSON.parse(fs.readFileSync(stat.location).toString())
+        const minified = JSON.parse((await fs.readFile(stat.location)).toString())
+        const unminified = JSON.stringify(minified, null, 4)
+        await fs.writeFile(stat.location, unminified)
       } catch (err) {
         console.log(stat.location, err)
-        return
       }
-      const unminified = JSON.stringify(minified)
-      fs.writeFileSync(stat.location, unminified)
     })
   }
 

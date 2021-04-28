@@ -1,17 +1,17 @@
 const path = require('path')
 const fs = require('fs-extra')
 const ZipLibrary = require('node-native-zip-compression')
-const { stat } = require('../globals/fs-globs')
-const commands = require('../globals/commands')
-const tasks = require('../globals/tasks')
-const { log, warn } = require('../globals/logger')
+const { stats } = require('rub2-cli/globals/fs-globs')
+const commands = require('rub2-cli/globals/commands')
+const tasks = require('rub2-cli/globals/tasks')
+const { log, warn } = require('rub2-cli/globals/logger')
 
 commands.create({
 
-  index: 45,
-  command: 'zip',
-  switch: 'z',
-  description: 'zip output folders',
+  index: 46,
+  command: 'zipaat',
+  switch: 'Z',
+  description: 'zip for import to AAT',
   exclusive: false,
 
   shouldHelp () {
@@ -21,13 +21,12 @@ commands.create({
   },
 
   shouldQueue () {
-    return commands.has('zip') || commands.switches(['z']) ||
-    commands.options(['zip'])
+    return commands.has('zipaat') || commands.switches(['Z']) ||
+    commands.options(['zipaat'])
   },
 
   queue (isFromWatch) {
     return new Promise((resolve, reject) => {
-      // log("Zipping output folder...");
       tasks.add(this)
       resolve()
     })
@@ -38,9 +37,9 @@ commands.create({
     commands.options(['verbose'])
     const namePrefix = name ? name + ': ' : ''
     if (isVerbose) {
-      log(`${namePrefix}Zipping...`)
+      log(`${namePrefix}Zipping for AAT...`)
     } else {
-      log(`${namePrefix}Zipping...`)
+      log(`${namePrefix}Zipping for AAT...`)
     }
 
     const now = (new Date())
@@ -51,18 +50,28 @@ commands.create({
     const outputDir = path.join(process.cwd(), 'zips')
     await fs.mkdirp(outputDir)
 
-    const stats = await stat({
+    const files = await stats({
       globs: [
-        '**'
+        paths.isServerBuild && `${paths.dest.relative}/course/**`,
+        paths.isServerBuild && `!src/course/**`,
+        '!.git',
+        '!src/*.js',
+        '!*.zip',
+        'grunt/**',
+        'src/**',
+        '*.*'
       ],
-      location: paths.dest.location,
+      location: process.cwd(),
       dirs: false
     })
     return new Promise((resolve, reject) => {
       const archive = new ZipLibrary()
-      const zipFiles = stats.map(stat => {
+      const zipFiles = files.map(stat => {
+        const mapToName = paths.isServerBuild && stat.relative.startsWith(`${paths.dest.relative}/course/`)
+          ? stat.relative.replace(new RegExp(`^${paths.dest.relative}/course/`), 'src/course/')
+          : stat.relative
         return {
-          name: stat.relative,
+          name: mapToName,
           path: stat.location
         }
       })
@@ -81,7 +90,7 @@ commands.create({
         }
 
         archive.toBuffer(function (buff) {
-          const fileName = path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.zip')
+          const fileName = path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.aat.zip')
           fs.writeFile(fileName, buff, function () {
             resolve()
           })

@@ -1,0 +1,13 @@
+{
+  "env": {
+      "node": true,
+      "commonjs": false,
+      "es2020": true
+  },
+  "extends": [
+      "standard"
+  ],
+  "parserOptions": {
+      "ecmaVersion": 2020
+  }
+}

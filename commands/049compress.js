@@ -1,18 +1,18 @@
 const _ = require('lodash')
-const grunt = require('../globals/grunt')
-const commands = require('../globals/commands')
-const tasks = require('../globals/tasks')
-const adapt = require('../globals/adapt')
-const { log } = require('../globals/logger')
+const grunt = require('rub2-cli/globals/grunt')
+const commands = require('rub2-cli/globals/commands')
+const tasks = require('rub2-cli/globals/tasks')
+const adapt = require('rub2-cli/globals/adapt')
+const { log } = require('rub2-cli/globals/logger')
 
 commands.create({
 
-  index: 44,
+  index: 49,
   command: [
-    'uglify'
+    'compress'
   ],
-  switch: 'U',
-  description: 'uglify js',
+  switch: 'C',
+  description: 'compress images',
   exclusive: false,
 
   shouldHelp () {
@@ -22,12 +22,8 @@ commands.create({
   },
 
   shouldQueue () {
-    return commands.has(['uglify']) ||
-    commands.switches(['U']) || commands.options(['uglify']) ||
-    ((commands.has(['build']) || commands.switches(['b']) ||
-    commands.options(['build'])) && !(commands.has(['dev']) || commands.switches(['d']) ||
-    commands.options(['dev']) || commands.has(['prettify']) || commands.switches(['P']) ||
-    commands.options(['prettify'])))
+    return commands.has(['compress']) ||
+    commands.switches(['C']) || commands.options(['compress'])
   },
 
   queue (isFromWatch) {
@@ -58,9 +54,9 @@ commands.create({
 
     const gruntTasks = []
 
-    if (adapt.hasMinify) {
-      log(`${namePrefix}Uglifying...`)
-      gruntTasks.push('minify')
+    if (adapt.hasCompress) {
+      log(`${namePrefix}Compressing...`)
+      gruntTasks.push('compress')
 
       return grunt.run(namePrefix, gruntTasks, gruntOpts)
         .then(grunt.output).catch(grunt.error)
