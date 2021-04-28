@@ -5,7 +5,7 @@
 var path = require("path");
 
 module.exports = function(grunt) {
-    
+
     grunt.registerTask('create-json-config', 'Creating config.json', function() {
 
         var jsonext = grunt.config('jsonext');

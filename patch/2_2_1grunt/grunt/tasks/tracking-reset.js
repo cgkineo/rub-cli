@@ -11,19 +11,19 @@ module.exports = function(grunt) {
 
         var isSrcCourse = (grunt.option('outputdir') && grunt.option('outputdir').slice(-5) !== "build");
         var sourcedir = isSrcCourse ? grunt.option('outputdir') : grunt.config('sourcedir');
-        
+
         var blocksFiles = grunt.file.expand(path.join(sourcedir, options.blocksFile));
         var courseFiles = grunt.file.expand(path.join(sourcedir, options.courseFile));
-        
+
         for (var i = 0; i < blocksFiles.length; i++) {
             resetTrackingIds(blocksFiles[i], courseFiles[i]);
             options._latestTrackingId = -1;
         }
-        
+
         function resetTrackingIds(blocksPath, coursePath){
             var blocks = grunt.file.readJSON(blocksPath);
             var course = grunt.file.readJSON(coursePath);
-            
+
             for(var i = 0; i < blocks.length; i++) {
                 var block = blocks[i];
                 block._trackingId = ++options._latestTrackingId;
