@@ -78,7 +78,7 @@ const remove = async ({
       await fs.remove(start)
       continue
     }
-    await fs.rm(start)
+    await fs.remove(start)
   }
 }
 
