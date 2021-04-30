@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 const ZipLibrary = require('node-native-zip-compression')
-const { stat } = require('../globals/fs-globs')
+const { stats } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const { log, warn } = require('../globals/logger')
@@ -51,7 +51,7 @@ commands.create({
     const outputDir = path.join(process.cwd(), 'zips')
     await fs.mkdirp(outputDir)
 
-    const stats = await stat({
+    const files = await stats({
       globs: [
         '**'
       ],
@@ -60,7 +60,7 @@ commands.create({
     })
     return new Promise((resolve, reject) => {
       const archive = new ZipLibrary()
-      const zipFiles = stats.map(stat => {
+      const zipFiles = files.map(stat => {
         return {
           name: stat.relative,
           path: stat.location
