@@ -1,7 +1,7 @@
 {
   "name": "rub-cli",
   "commonName": "rub-cli",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run: 'npm install -g rub-cli'",
@@ -21,7 +21,7 @@
     "lodash": "^4.17.21",
     "minimatch": "^3.0.4",
     "node-native-zip-compression": "^1.0.1",
-    "open": "^8.0.5",
+    "open": "8.0.2",
     "semver": "^7.3.5",
     "serve-index": "^1.9.1",
     "serve-static": "^1.14.1"

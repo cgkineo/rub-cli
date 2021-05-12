@@ -215,7 +215,9 @@ commands.create({
           this._clearWatchPaths[k].clear()
         }
         this.finished()
-        fsg.watches.play()
+        _.delay(() => {
+          fsg.watches.play()
+        }, 250)
       })
     } else {
       tasks.perform(this._changedLayouts).then(() => {
@@ -223,7 +225,9 @@ commands.create({
           this._clearWatchPaths[k].clear()
         }
         this.finished()
-        fsg.watches.play()
+        _.delay(() => {
+          fsg.watches.play()
+        }, 250)
       })
     }
   },
