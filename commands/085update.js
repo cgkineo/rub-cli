@@ -15,7 +15,7 @@ function download (locationUrl, callback, errorCB) {
     hostname: urlParsed.hostname,
     port: 443,
     protocol: urlParsed.protocol,
-    path: urlParsed.path,
+    path: urlParsed.pathname,
     method: 'GET'
   }, function (res) {
     let outputData = ''
