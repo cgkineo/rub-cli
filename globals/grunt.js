@@ -17,7 +17,7 @@ class Grunt {
     let opts = ''
     if (options && Object.keys(options).length) {
       for (const k in options) {
-        opts += ` --${k}="${options[k]}"`
+        opts += ` --${k}${options[k] === null ? '' : `="${options[k]}"`}`
       }
     }
     const command = 'grunt ' + tasks.join(' ') + opts

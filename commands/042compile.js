@@ -93,6 +93,7 @@ commands.create({
     let hasNewerPrefix = adapt.hasNewer
     if (options.force) {
       hasNewerPrefix = false
+      gruntOpts['disable-cache'] = null
     }
 
     const sourcemapPath = path.join(paths.dest.location, 'adapt/js/adapt.min.js.map')

@@ -30,7 +30,10 @@ commands.create({
     const isBuilding = commands.has(['build']) || commands.switches(['b']) ||
     commands.options(['build'])
 
-    if (!isBuilding) return
+    const isDevelopment = commands.has(['dev']) ||
+      commands.switches(['d']) || commands.options(['dev'])
+
+    if (!isBuilding || isDevelopment) return
 
     const namePrefix = name ? name + ': ' : ''
     log(`${namePrefix}Cleaning up for production...`)
