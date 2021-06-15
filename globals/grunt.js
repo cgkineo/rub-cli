@@ -51,7 +51,7 @@ class Grunt {
     })
   }
 
-  static parseOutput (output) {
+  static parseOutput (output = '') {
     output = output.replace(/Running ".*" \(.*\) task\n/g, '')
     output = output.replace(/Running ".*" task\n/g, '')
     output = output.replace(/Task complete\. .*\n/g, '')
@@ -74,7 +74,7 @@ class Grunt {
     while (output.indexOf('\n\n') > -1) {
       output = output.replace(/\n\n/g, '\n')
     }
-    if (!output || output === '\n') return
+    if (!output || output === '\n') return ''
     if (output.substr(-1) === '\n') output = output.substr(0, output.length - 1)
     output = output.split('\n').filter(function (item) {
       return item.trim()
