@@ -20,7 +20,7 @@ class Grunt {
         opts += ` --${k}${options[k] === null ? '' : `="${options[k]}"`}`
       }
     }
-    const command = 'grunt ' + tasks.join(' ') + opts
+    const command = 'grunt --colors ' + tasks.join(' ') + opts
 
     return new Promise((resolve, reject) => {
       let exec = require('child_process').exec
@@ -28,7 +28,6 @@ class Grunt {
         cwd: options['base']
       }, (error, stdout, stderr) => {
         if (error && error.code) {
-          const error = new Error()
           Object.assign(error, {
             name,
             tasks,
@@ -85,17 +84,23 @@ class Grunt {
 
   static output (data) {
     pad(4)
-    let output = Grunt.parseOutput(data.stdout)
-    if (!output) return
-    log(data.name + output)
+    let stdout = Grunt.parseOutput(data.stdout)
+    let stderr = Grunt.parseOutput(data.stderr)
+    if (stdout.includes(stderr)) stderr = '';
+    if (!stdout && !stderr) return
+    if (stdout) log(data.name + stdout)
+    if (stderr) log(stderr)
     pad(2)
   }
 
   static error (data) {
     pad(4)
-    let output = Grunt.parseOutput(data.stdout)
-    if (!output) return
-    notice(data.name + output)
+    let stdout = Grunt.parseOutput(data.stdout)
+    let stderr = Grunt.parseOutput(data.stderr)
+    if (stdout.includes(stderr)) stderr = '';
+    if (!stdout && !stderr) return
+    if (stdout) notice(data.name + stdout)
+    if (stderr) log(stderr)
     pad(2)
   }
 }
