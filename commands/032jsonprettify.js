@@ -65,6 +65,16 @@ commands.create({
       ],
       location: path.join(paths.dest.location, 'course')
     })
+    if (!paths.isServerBuild) {
+      // Ensure src files are 2 spaces to stop jumping around
+      jsons.push(...await stats({
+        globs: [
+          '*.' + jsonext,
+          '**/*.' + jsonext
+        ],
+        location: path.join(paths.src.location, 'course')
+      }))
+    }
     return async.forEachLimit(jsons, 1, async (stat) => {
       try {
         const minified = JSON.parse((await fs.readFile(stat.location)).toString())
