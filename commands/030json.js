@@ -100,7 +100,8 @@ commands.create({
 
     gruntTasks.push(...[
       'tracking-insert',
-      'replace'
+      'replace',
+      'scripts:adaptpostbuild'
     ])
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
