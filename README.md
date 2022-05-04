@@ -100,3 +100,12 @@ These three commands (``tracking:remove``, ``tracking:insert`` and ``tracking:re
 ### Flags vs commands vs options
 Commands will typically run at the exclusion of all other non-dependent tasks, such that ``rub prettify`` will only perform a json prettification task. Flags now assume a build should happen, such that ``rub -P`` will build and prettify, ``rub -Pz`` will build, prettify and zip, etc. Options specify a value, such as `rub -p=10`, to allow 10 parallel tasks.
 
+### Migrating from adapt-cli to rub
+In order to use rub, your Adapt project's folder structure will require a few changes.
+
+1. Create a `builds` folder in the root of your project.
+2. Run `grunt build` to create your initial course. This creates a course folder called `build.`
+3. Move the `build` folder into the `builds` folder and rename it using your course name (ex. `p101`).
+4. Finally, delete the `course` folder that lives in `src`. Otherwise, the `build` folder will be recreated each time you run rub.
+
+Now, you're ready to run rub with your new course.
