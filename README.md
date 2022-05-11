@@ -104,8 +104,6 @@ Commands will typically run at the exclusion of all other non-dependent tasks, s
 In order to use rub, your Adapt project's folder structure will require a few changes.
 
 1. Create a `builds` folder in the root of your project.
-2. Create a folder inside the `builds` folder using your module name (e.g. `p101)
-3. Move/remove the `src/course` folder into the `builds/p101` folder 
-4. Run `rub dev p101` to build
-
-Now, you're ready to run rub with your new course.
+2. Create a folder inside the `builds` folder using your module name (e.g. `p101).
+3. Move the contents of the 'src/course' folder into 'builds/p101'. Then, remove 'src/course' entirely.
+4. Finally, run `rub dev p101` to build.
