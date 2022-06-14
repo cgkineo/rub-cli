@@ -51,11 +51,12 @@ commands.create({
     let fileAssetListPaths = []
 
     const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
 
     const jsons = await stats({
       globs: [
-        'course/*.' + jsonext,
-        'course/**/*.' + jsonext
+        `${coursedir}/*.${jsonext}`,
+        `${coursedir}/**/*.%{jsonext}`
       ],
       location: paths.dest.location,
       dirs: false
@@ -170,8 +171,8 @@ commands.create({
         '!adapt/css/assets/**',
         'assets/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
         'assets/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
-        'course/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)',
-        'course/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)'
+        `${coursedir}/**/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)`,
+        `${coursedir}/*.+(png|gif|jpg|jpeg|mp4|ogv|mp3|ogg|pdf|svg|vtt|pdf)`
       ],
       location: paths.dest.location,
       dirs: false

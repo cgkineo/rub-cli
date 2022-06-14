@@ -56,6 +56,7 @@ commands.create({
     const namePrefix = name ? name + ': ' : ''
 
     const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
 
     log(`${namePrefix}Minifying...`)
 
@@ -64,7 +65,7 @@ commands.create({
         '*.' + jsonext,
         '**/*.' + jsonext
       ],
-      location: path.join(paths.dest.location, 'course')
+      location: path.join(paths.dest.location, coursedir)
     })
     await async.forEachLimit(jsons, 1, stat => {
       let minified

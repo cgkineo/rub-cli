@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const ZipLibrary = require('node-native-zip-compression')
 const { stats } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
+const adapt = require('../globals/adapt')
 const tasks = require('../globals/tasks')
 const { log, warn } = require('../globals/logger')
 
@@ -50,10 +51,12 @@ commands.create({
     const outputDir = path.join(process.cwd(), 'zips')
     await fs.mkdirp(outputDir)
 
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
+
     const files = await stats({
       globs: [
-        paths.isServerBuild && `${paths.dest.relative}/course/**`,
-        paths.isServerBuild && `!src/course/**`,
+        paths.isServerBuild && `${paths.dest.relative}/${coursedir}/**`,
+        paths.isServerBuild && `!src/${coursedir}/**`,
         '!.git',
         '!src/*.js',
         '!*.zip',
@@ -67,8 +70,8 @@ commands.create({
     return new Promise((resolve, reject) => {
       const archive = new ZipLibrary()
       const zipFiles = files.map(stat => {
-        const mapToName = paths.isServerBuild && stat.relative.startsWith(`${paths.dest.relative}/course/`)
-          ? stat.relative.replace(new RegExp(`^${paths.dest.relative}/course/`), 'src/course/')
+        const mapToName = paths.isServerBuild && stat.relative.startsWith(`${paths.dest.relative}/${coursedir}/`)
+          ? stat.relative.replace(new RegExp(`^${paths.dest.relative}/${coursedir}/`), `src/${coursedir}/`)
           : stat.relative
         return {
           name: mapToName,

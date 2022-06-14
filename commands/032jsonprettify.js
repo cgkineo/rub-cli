@@ -55,6 +55,7 @@ commands.create({
     const namePrefix = name ? name + ': ' : ''
 
     const jsonext = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.jsonext) || 'json'
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
 
     log(`${namePrefix}Prettifying...`)
 
@@ -63,7 +64,7 @@ commands.create({
         '*.' + jsonext,
         '**/*.' + jsonext
       ],
-      location: path.join(paths.dest.location, 'course')
+      location: path.join(paths.dest.location, coursedir)
     })
     if (!paths.isServerBuild) {
       // Ensure src files are 2 spaces to stop jumping around
@@ -72,7 +73,7 @@ commands.create({
           '*.' + jsonext,
           '**/*.' + jsonext
         ],
-        location: path.join(paths.src.location, 'course')
+        location: path.join(paths.src.location, coursedir)
       }))
     }
     return async.forEachLimit(jsons, 1, async (stat) => {

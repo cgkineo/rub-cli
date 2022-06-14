@@ -86,6 +86,16 @@ Add to Adapt framework ``package.json``
     }
 ```
 
+### Changing ``course`` folder name
+Add to Adapt framework ``package.json``
+```json
+    "grunt": {
+        "options": {
+            "coursedir": "alternative"
+        }
+    }
+```
+
 ### IMSMANIFEST.XML variable replacement
 ```
 @@course.title

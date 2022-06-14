@@ -3,6 +3,7 @@ const commands = require('../globals/commands')
 const fsg = require('../globals/fs-globs')
 const tasks = require('../globals/tasks')
 const { log, notice } = require('../globals/logger')
+const adapt = require('../globals/adapt')
 
 commands.create({
 
@@ -47,6 +48,7 @@ commands.create({
   _allLayouts: false,
 
   async perform (name, options, paths) {
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
     tasks.isWaiting = true
 
     if (paths.isServerBuild && !this._watchPaths['course:' + name]) {
@@ -54,7 +56,7 @@ commands.create({
       this._clearWatchPaths['course:' + name] =
       await fsg.watch({
         globs: [
-          'course/**'
+          `${coursedir}/**`
         ],
         location: paths.dest.location
       }, (changes) => {
@@ -76,18 +78,18 @@ commands.create({
         }
         this.performTasks()
       })
-    } else if (!paths.isServerBuild && !this._watchPaths['src/course']) {
-      this._watchPaths['src/course'] =
-      this._clearWatchPaths['src/course'] =
+    } else if (!paths.isServerBuild && !this._watchPaths[`src/${coursedir}`]) {
+      this._watchPaths[`src/${coursedir}`] =
+      this._clearWatchPaths[`src/${coursedir}`] =
       await fsg.watch({
         globs: [
-          'course/**'
+          `${coursedir}/**`
         ],
         location: paths.src.location
       }, (changes) => {
         if (this._allLayouts) return
-        if (this._changedLayouts['src/course']) return
-        this._changedLayouts['src/course'] = paths
+        if (this._changedLayouts[`src/${coursedir}`]) return
+        this._changedLayouts[`src/${coursedir}`] = paths
 
         const changeTypes = changes.map(item => item.change)
         const wasAnythingAddedOrDeleted = (changeTypes.includes('added') || changeTypes.includes('deleted'))
@@ -121,7 +123,7 @@ commands.create({
           'core/less/*',
           'core/templates/**/*',
           'core/templates/*',
-          '!course'
+          `!${coursedir}`
         ],
         location: paths.src.location
       }, (changes) => {
@@ -168,7 +170,7 @@ commands.create({
           'core/scripts/*',
           'core/fonts/**/*',
           'core/fonts/*',
-          '!course'
+          `!${coursedir}`
         ],
         location: paths.src.location
       }, (changes) => {
