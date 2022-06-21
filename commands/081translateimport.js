@@ -4,6 +4,7 @@ const grunt = require('../globals/grunt')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const { log } = require('../globals/logger')
+const adapt = require('../globals/adapt')
 
 commands.create({
 
@@ -38,6 +39,7 @@ commands.create({
   },
 
   perform (name, options, paths) {
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
     const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
     commands.options(['verbose'])
 
@@ -58,9 +60,9 @@ commands.create({
 
     if (paths.isServerBuild) {
       gruntOpts.outputdir = paths.dest.location
-      fs.mkdirpSync(path.join(gruntOpts.outputdir, 'course', targetLang))
+      fs.mkdirpSync(path.join(gruntOpts.outputdir, coursedir, targetLang))
     } else {
-      fs.mkdirpSync(path.join('src/course', targetLang))
+      fs.mkdirpSync(path.join(`src/${coursedir}`, targetLang))
     }
 
     const namePrefix = name ? name + ': ' : ''

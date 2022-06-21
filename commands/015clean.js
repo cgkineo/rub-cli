@@ -2,6 +2,7 @@ const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
 const { log } = require('../globals/logger')
 const { remove } = require('../globals/fs-globs')
+const adapt = require('../globals/adapt')
 
 commands.create({
 
@@ -45,11 +46,13 @@ commands.create({
     const namePrefix = name ? name + ': ' : ''
     log(`${namePrefix}Cleaning up...`)
 
+    const coursedir = (adapt && adapt.grunt && adapt.grunt.options && adapt.grunt.options.coursedir) || 'course'
+
     let globs
     if (paths.isServerBuild) {
       globs = [
-        '!course/**',
-        '!course',
+        `!${coursedir}/**`,
+        `!${coursedir}`,
         '**'
       ]
     } else {
