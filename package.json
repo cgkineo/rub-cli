@@ -1,7 +1,7 @@
 {
   "name": "rub-cli",
   "commonName": "rub-cli",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "custom": false,
   "description": "Adapt Buildkit (rub-cli)",
   "failText": "Please run: 'npm install -g rub-cli'",
@@ -10,7 +10,7 @@
   "repository": "https://github.com/cgkineo/rub-cli",
   "versionURL": "https://raw.githubusercontent.com/cgkineo/rub-cli/master/package.json",
   "dependencies": {
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "chalk": "^4.1.0",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
