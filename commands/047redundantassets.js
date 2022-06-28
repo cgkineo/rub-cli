@@ -56,7 +56,7 @@ commands.create({
     const jsons = await stats({
       globs: [
         `${coursedir}/*.${jsonext}`,
-        `${coursedir}/**/*.%{jsonext}`
+        `${coursedir}/**/*.${jsonext}`
       ],
       location: paths.dest.location,
       dirs: false
@@ -176,6 +176,23 @@ commands.create({
       ],
       location: paths.dest.location,
       dirs: false
+    })
+    const outputs = await stats({
+      globs: [
+        '**/*.js',
+        '**/*.css',
+        '*.css'
+      ],
+      location: paths.dest.location,
+      dirs: false
+    })
+    assets.forEach(asset => {
+      outputs.forEach(output => {
+        const file = fs.readFileSync(output.location).toString()
+        const isFound = file.includes(asset.relative)
+        if (!isFound) return
+        fileAssetListPaths.push(asset.location)
+      })
     })
     const storedAssets = assets.map(asset => asset.location)
     let difference = _.difference(storedAssets, fileAssetListPaths).map(location => posix(path.relative(paths.dest.location, location)))
