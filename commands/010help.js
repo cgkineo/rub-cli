@@ -51,7 +51,7 @@ commands.create({
           !handler.description && !handler.switch) return
 
         let command = handler.command || ['']
-        command = command[0]
+        if (Array.isArray(command)) command = command[0]
         const description = handler.description || ''
         let swtch = handler.switch || ''
 
