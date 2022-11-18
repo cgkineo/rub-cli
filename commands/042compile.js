@@ -143,7 +143,7 @@ commands.create({
     gruntTasks.push(`build-config`)
 
     if (adapt.hasScripts) {
-      log(`${namePrefix}Running plugin scripts...`)
+      log(`${namePrefix}Running plugin postbuild scripts...`)
       gruntTasks.push('scripts:adaptpostbuild')
     }
 

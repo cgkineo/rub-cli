@@ -84,6 +84,11 @@ commands.create({
       gruntTasks.push('copy')
     }
 
+    if (adapt.hasScripts) {
+      log(`${namePrefix}Running plugin postcopy scripts...`)
+      gruntTasks.push('scripts:adaptpostcopy')
+    }
+
     if (semver.satisfies(adapt.version, '<=2.2.1', rub.semverOptions)) {
       // schema defaults acts upon the destination
       gruntTasks.push('schema-defaults')
