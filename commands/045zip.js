@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
-const ZipLibrary = require('node-native-zip-compression')
+const archiver = require('archiver')
 const { stats } = require('../globals/fs-globs')
 const commands = require('../globals/commands')
 const tasks = require('../globals/tasks')
@@ -59,7 +59,9 @@ commands.create({
       dirs: false
     })
     return new Promise((resolve, reject) => {
-      const archive = new ZipLibrary()
+      const archive = archiver('zip', {
+        zlib: { level: 9 } // Sets the compression level.
+      })
       const zipFiles = files.map(stat => {
         return {
           name: stat.relative,
@@ -72,21 +74,25 @@ commands.create({
         resolve()
         return
       }
+  
+      const output = fs.createWriteStream(path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.zip'))
 
-      archive.addFiles(zipFiles, function (err) {
-        if (err) {
-          warn(namePrefix + err)
-          resolve()
-          return
-        }
+      output.on('close', resolve)
 
-        archive.toBuffer(function (buff) {
-          const fileName = path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.zip')
-          fs.writeFile(fileName, buff, function () {
-            resolve()
-          })
-        })
+      output.on('end', resolve)
+
+      archive.pipe(output)
+
+      zipFiles.forEach(file => {
+        archive.append(fs.createReadStream(file.path), { name: file.name })
       })
+
+      archive.on('error', err => {
+        log(err)
+        resolve()
+      })
+
+      archive.finalize()
     })
 
     function twoDigit (num) {
