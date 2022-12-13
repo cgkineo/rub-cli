@@ -84,7 +84,7 @@ commands.create({
       gruntTasks.push('copy')
     }
 
-    if (adapt.hasScripts) {
+    if (adapt.hasScripts && semver.satisfies(adapt.version, '>=5.24', rub.semverOptions)) {
       log(`${namePrefix}Running plugin postcopy scripts...`)
       gruntTasks.push('scripts:adaptpostcopy')
     }
