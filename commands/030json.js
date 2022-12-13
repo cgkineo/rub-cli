@@ -84,6 +84,11 @@ commands.create({
       gruntTasks.push('copy')
     }
 
+    if (adapt.hasScripts && semver.satisfies(adapt.version, '>=5.24', rub.semverOptions)) {
+      log(`${namePrefix}Running plugin postcopy scripts...`)
+      gruntTasks.push('scripts:adaptpostcopy')
+    }
+
     if (semver.satisfies(adapt.version, '<=2.2.1', rub.semverOptions)) {
       // schema defaults acts upon the destination
       gruntTasks.push('schema-defaults')
@@ -100,8 +105,7 @@ commands.create({
 
     gruntTasks.push(...[
       'tracking-insert',
-      'replace',
-      'scripts:adaptpostbuild'
+      'replace'
     ])
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)

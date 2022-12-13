@@ -142,8 +142,8 @@ commands.create({
 
     gruntTasks.push(`build-config`)
 
-    if (adapt.hasScript) {
-      log(`${namePrefix}Running plugin scripts...`)
+    if (adapt.hasScripts && semver.satisfies(adapt.version, '>=2.2.1', rub.semverOptions)) {
+      log(`${namePrefix}Running plugin postbuild scripts...`)
       gruntTasks.push('scripts:adaptpostbuild')
     }
 
