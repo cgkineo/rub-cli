@@ -61,7 +61,7 @@ commands.create({
     return new Promise((resolve, reject) => {
       const archive = archiver('zip', {
         zlib: { level: 9 } // Sets the compression level.
-      });
+      })
       const zipFiles = files.map(stat => {
         return {
           name: stat.relative,
@@ -77,25 +77,20 @@ commands.create({
   
       const output = fs.createWriteStream(path.join(outputDir, scoDate + '_' + name.replace(/[|&;$%@"<>()/\\+,]/g, '_') + '.zip'))
 
-      output.on('close', () => {
-        resolve()
-      });
+      output.on('close', resolve)
 
-      output.on('end', () => {
-        resolve()
-      });
+      output.on('end', resolve)
 
-      // pipe archive data to the file
       archive.pipe(output)
 
-      zipFiles.forEach((file) => {
+      zipFiles.forEach(file => {
         archive.append(fs.createReadStream(file.path), { name: file.name })
-      });
+      })
 
-      archive.on('error', (err) => {
+      archive.on('error', err => {
         log(err)
         resolve()
-      });
+      })
 
       archive.finalize()
     })
