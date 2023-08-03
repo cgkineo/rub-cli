@@ -35,7 +35,7 @@ class Layouts {
       const buildsPath = path.join(process.cwd(), 'builds')
       const stats = await fsg.stats({ globs: `**/${coursedir}/config.*`, location: buildsPath })
       await async.forEachOfLimit(stats, 1, async (stat) => {
-        const moduleName = path.join(stat.dir, '..')
+        const moduleName = path.join(stat.dir, '..').replace(/\\/g, '/')
         const moduleDirStat = await fsg.stat(path.join(buildsPath, moduleName), process.cwd())
         if (!moduleDirStat.isDirectory()) return
         layout[moduleName] = {
