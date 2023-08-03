@@ -80,7 +80,7 @@ commands.create({
       try {
         const minified = JSON.parse((await fs.readFile(stat.location)).toString())
         const unminified = JSON.stringify(minified, null, 2)
-        await fs.writeFile(stat.location, unminified)
+        await fs.writeFile(stat.location, `${unminified}\n`)
       } catch (err) {
         console.log(stat.location, err)
       }

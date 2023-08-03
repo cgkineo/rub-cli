@@ -76,7 +76,7 @@ commands.create({
         return
       }
       const unminified = JSON.stringify(minified)
-      fs.writeFileSync(stat.location, unminified)
+      fs.writeFileSync(stat.location, `${unminified}\n`)
     })
   }
 

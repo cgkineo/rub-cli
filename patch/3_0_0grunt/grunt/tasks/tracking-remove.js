@@ -15,8 +15,8 @@ module.exports = function(grunt) {
             }
             delete course._latestTrackingId;
             grunt.log.writeln("Tracking IDs removed.");
-            grunt.file.write(coursePath, JSON.stringify(course, null, 4));
-            grunt.file.write(blocksPath, JSON.stringify(blocks, null, 4));
+            grunt.file.write(coursePath, `${JSON.stringify(course, null, 2)}\n`);
+            grunt.file.write(blocksPath, `${JSON.stringify(blocks, null, 2)}\n`);
         }
 
         // rub patched issue/2006
