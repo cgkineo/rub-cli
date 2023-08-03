@@ -42,6 +42,8 @@ commands.create({
   },
 
   perform (name, options, paths) {
+    const isDevelopment = commands.has(['dev']) || commands.switches(['d']) ||
+    commands.options(['dev'])
     const isVerbose = commands.has('verbose') || commands.switches(['v']) ||
     commands.options(['verbose'])
 
@@ -104,9 +106,10 @@ commands.create({
     }
 
     gruntTasks.push(...[
+      isDevelopment && '--dev',
       'tracking-insert',
       'replace'
-    ])
+    ].filter(Boolean))
 
     return grunt.run(namePrefix, gruntTasks, gruntOpts)
       .then(grunt.output).catch(grunt.error)
