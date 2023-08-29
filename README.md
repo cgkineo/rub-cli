@@ -53,7 +53,6 @@ Adapt Buildkit (rub-cli)
     translate:export     export translatable text
     translate:import     import translated text
     -W, wait             wait for keypress
-  Finished.
 
 ```
 
