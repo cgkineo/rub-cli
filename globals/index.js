@@ -34,7 +34,8 @@ class Globals {
         hasRunNpm = true
 
         let child = spawn((/^win/.test(process.platform) ? 'npm.cmd' : 'npm'), ['install'], {
-          cwd: process.cwd()
+          cwd: process.cwd(),
+          shell: true
         })
 
         child.stdout.pipe(process.stdout)
