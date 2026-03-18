@@ -3,7 +3,8 @@ const path = require('path')
 const pwd = process.cwd()
 const adapt = require('../globals/adapt')
 const patch = require('../globals/patch')
-const { pad, log, notice } = require('../globals/logger')
+const chalk = require('chalk')
+const { pad, log, notice, warn } = require('../globals/logger')
 
 class Grunt {
   static run (name, tasks, options) {
@@ -99,7 +100,18 @@ class Grunt {
     let stderr = Grunt.parseOutput(data.stderr)
     if (stdout.includes(stderr)) stderr = '';
     if (!stdout && !stderr) return
-    if (stdout) notice(data.name + stdout)
+    if (stdout) {
+      const lines = stdout.split('\n').filter(Boolean)
+      const hasFatal = lines.some(line => line.startsWith('Fatal error'))
+      if (hasFatal) {
+        lines.forEach(line => line.startsWith('Fatal error') ? warn(line) : notice(line))
+      } else {
+        notice(data.name)
+        pad(6)
+        lines.forEach(line => line.startsWith('Warning:') ? (pad(4), warn(line), pad(6)) : warn(`${chalk.green('>>')} ${chalk.yellow(line)}`))
+        pad(4)
+      }
+    }
     if (stderr) log(stderr)
     pad(2)
   }
