@@ -1,5 +1,5 @@
 const commands = require('../globals/commands')
-const { pad } = require('../globals/logger')
+const { pad, notice, warn } = require('../globals/logger')
 const layouts = require('../globals/layouts')
 
 let locals = {
@@ -51,6 +51,13 @@ class Tasks {
     }
 
     if (count === 0) {
+      // Nothing to build, so say so rather than finishing silently and
+      // leaving a mistyped name looking like an empty build
+      const available = Object.keys(layout)
+      warn('No course found matching: ' + items.join(', '))
+      notice(available.length
+        ? 'Available courses: ' + available.join(', ')
+        : 'No courses were found in this folder.')
       return null
     }
 
